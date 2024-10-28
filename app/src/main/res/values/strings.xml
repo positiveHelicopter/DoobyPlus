@@ -2,5 +2,6 @@
     <string name="app_name">DoobyPlus</string>
 
     <!-- credits -->
+    <string name="credit_dooby">doob @dooby3D</string>
     <string name="credit_splash_screen">Borksie @BorkNeko</string>
 </resources>

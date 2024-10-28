@@ -1,4 +1,4 @@
-package com.positiveHelicopter.doobyplus.screens
+package com.positiveHelicopter.doobyplus.screens.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,7 @@ import com.positiveHelicopter.doobyplus.R
 
 @Composable
 internal fun DoobScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.Companion
 ) {
     Box(modifier.fillMaxSize().background(colorResource(R.color.purple_200))) {
 

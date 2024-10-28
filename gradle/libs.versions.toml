@@ -17,6 +17,7 @@ androidxComposeBom = "2024.06.00"
 androidxComposeViewModel = "2.8.3"
 androidxComposeHiltNavigation = "1.2.0"
 splashScreen = "1.2.0-alpha01"
+serialization = "1.7.3"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -55,7 +56,7 @@ androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxComposeViewModel" }
 androidx-compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxComposeHiltNavigation" }
 androidx-core-splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
-
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -70,6 +71,8 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 # Plugins defined by this project
 doobyplus-android-application = { id = "doobyplus.android.application", version = "unspecified" }

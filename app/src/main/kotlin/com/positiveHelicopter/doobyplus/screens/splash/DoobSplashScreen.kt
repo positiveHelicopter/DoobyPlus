@@ -40,6 +40,7 @@ internal fun DoobSplashScreen(
             .data(R.raw.jerboa_launch)
             .repeatCount(0)
             .onAnimationEnd(endSplash)
+            .listener(onError = { _, _ -> endSplash() })
             .build()
         AsyncImage(
             modifier = modifier

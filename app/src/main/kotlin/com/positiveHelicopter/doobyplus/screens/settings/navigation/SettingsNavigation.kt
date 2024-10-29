@@ -11,8 +11,8 @@ internal fun NavController.navigateToSettings() {
     navigate(SETTINGS_ROUTE) { popBackStack() }
 }
 
-internal fun NavGraphBuilder.settingsScreen() {
+internal fun NavGraphBuilder.settingsScreen(setOrientation: (Int) -> Unit = {}) {
     composable(SETTINGS_ROUTE) {
-        SettingsScreen()
+        SettingsScreen(setOrientation = setOrientation)
     }
 }

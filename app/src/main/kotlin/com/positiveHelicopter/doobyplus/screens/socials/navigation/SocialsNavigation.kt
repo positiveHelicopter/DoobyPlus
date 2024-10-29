@@ -11,8 +11,8 @@ internal fun NavController.navigateToSocials() {
     navigate(SOCIALS_ROUTE) { popBackStack() }
 }
 
-internal fun NavGraphBuilder.socialsScreen() {
+internal fun NavGraphBuilder.socialsScreen(setOrientation: (Int) -> Unit = {}) {
     composable(SOCIALS_ROUTE) {
-        SocialsScreen()
+        SocialsScreen(setOrientation = setOrientation)
     }
 }

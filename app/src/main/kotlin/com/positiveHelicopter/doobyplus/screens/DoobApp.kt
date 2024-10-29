@@ -41,7 +41,8 @@ import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 
 @Composable
 internal fun DoobApp(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    setOrientation: (Int) -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -60,9 +61,9 @@ internal fun DoobApp(
             navController = navController,
             startDestination = WATCH_ROUTE
         ) {
-            watchScreen()
-            socialsScreen()
-            settingsScreen()
+            watchScreen(setOrientation)
+            socialsScreen(setOrientation)
+            settingsScreen(setOrientation)
         }
     }
 }

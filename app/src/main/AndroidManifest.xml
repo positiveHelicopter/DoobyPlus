@@ -28,8 +28,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.positiveHelicopter.doobyplus.DoobActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name="com.positiveHelicopter.doobyplus.DoobActivity"/>
 
     </application>
 

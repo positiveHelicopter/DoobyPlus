@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
@@ -125,6 +126,7 @@ internal fun TwitchWebView(
         modifier = modifier.fillMaxWidth().height(playerHeight),
         factory = {
             WebView(context).apply {
+                setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
                 webViewClient = object: WebViewClient() {
                     override fun shouldOverrideUrlLoading(
                         view: WebView?,

@@ -124,7 +124,7 @@ internal fun TwitchWebView(
         modifier = modifier.fillMaxWidth().height(playerHeight),
         factory = {
             WebView(context).apply {
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+                setBackgroundColor(ContextCompat.getColor(context, android.R.color.black))
                 webViewClient = object: WebViewClient() {
                     override fun shouldOverrideUrlLoading(
                         view: WebView?,

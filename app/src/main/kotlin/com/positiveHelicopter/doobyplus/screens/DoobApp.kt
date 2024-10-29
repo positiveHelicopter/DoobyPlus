@@ -119,11 +119,14 @@ internal fun DoobBottomBar(
             val selected = route == it.route
             NavigationBarItem(
                 selected = selected,
-                onClick = when(it.route) {
-                    WATCH_ROUTE -> navigateToWatch
-                    SOCIALS_ROUTE -> navigateToSocials
-                    SETTINGS_ROUTE -> navigateToSettings
-                    else -> navigateToWatch
+                onClick = {
+                    if (!selected)
+                    when(it.route) {
+                        WATCH_ROUTE -> navigateToWatch()
+                        SOCIALS_ROUTE -> navigateToSocials()
+                        SETTINGS_ROUTE -> navigateToSettings()
+                        else -> navigateToWatch()
+                    }
                 },
                 colors = doobNavigationBarItemColors(),
                 icon = {

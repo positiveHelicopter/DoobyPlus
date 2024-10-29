@@ -8,18 +8,24 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,10 +46,11 @@ internal fun WatchScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     Box(modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopStart) {
+        contentAlignment = Alignment.Center) {
         when(state) {
             is WatchState.Default -> TwitchPlayer(
-                modifier = modifier.padding(innerPadding),
+                modifier = modifier,
+                innerPadding = innerPadding,
                 toggleBottomBarHidden = toggleBottomBarHidden,
                 setOrientation = setOrientation,
                 enterFullScreen = viewModel::enterFullScreen,
@@ -60,10 +67,10 @@ internal fun WatchScreen(
     }
 }
 
-@SuppressLint("SetJavaScriptEnabled")
 @Composable
 internal fun TwitchPlayer(
     modifier: Modifier = Modifier,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     toggleBottomBarHidden: () -> Unit = {},
     setOrientation: (Int) -> Unit = {},
     enterFullScreen: (View?) -> Unit = {},
@@ -71,10 +78,49 @@ internal fun TwitchPlayer(
     openTwitch: () -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    val streamHeight = 300.dp
+    val streamHeightPx = with(LocalDensity.current) { (streamHeight - 35.dp).toPx().toInt() }
+    val streamHtml = "<iframe id=\"player\" src=\"https://player.twitch.tv/?autoplay=false&channel=singsing&parent=player.twitch.tv\" height=\"$streamHeightPx\" width=\"100%\">"
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val chatHeight = screenHeight - streamHeight - innerPadding.calculateBottomPadding()
+    val chatHeightPx = with(LocalDensity.current) { (chatHeight - 60.dp).toPx().toInt() }
+    val chatHtml = "<iframe id=\"player\" src=\"https://www.twitch.tv/embed/singsing/chat?darkpopout&parent=twitch.tv\" height=\"$chatHeightPx\" width=\"100%\">"
+    Column(modifier = modifier.padding(innerPadding),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
+    ) {
+        TwitchWebView(
+            modifier = Modifier,
+            toggleBottomBarHidden = toggleBottomBarHidden,
+            enterFullScreen = enterFullScreen,
+            exitFullScreen = exitFullScreen,
+            openTwitch = openTwitch,
+            htmlString = streamHtml,
+            playerHeight = streamHeight
+        )
+        TwitchWebView(
+            modifier = Modifier,
+            toggleBottomBarHidden = toggleBottomBarHidden,
+            enterFullScreen = enterFullScreen,
+            exitFullScreen = exitFullScreen,
+            openTwitch = openTwitch,
+            htmlString = chatHtml,
+            playerHeight = chatHeight
+        )
+    }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+internal fun TwitchWebView(
+    modifier: Modifier = Modifier,
+    toggleBottomBarHidden: () -> Unit = {},
+    enterFullScreen: (View?) -> Unit = {},
+    exitFullScreen: () -> Unit = {},
+    openTwitch: () -> Unit = {},
+    htmlString: String = "",
+    playerHeight: Dp = 300.dp
+) {
     val context = LocalContext.current
-    val playerHeight = 300.dp
-    val playerHeightPx = with(LocalDensity.current) { (playerHeight - 35.dp).toPx().toInt() }
-    val html = "<iframe id=\"player\" src=\"https://player.twitch.tv/?autoplay=false&channel=singsing&parent=player.twitch.tv\" height=\"$playerHeightPx\" width=\"100%\"></iframe>"
     AndroidView(
         modifier = modifier.fillMaxWidth().height(playerHeight),
         factory = {
@@ -86,6 +132,11 @@ internal fun TwitchPlayer(
                     ): Boolean {
                         openTwitch()
                         return true
+                    }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        loadUrl("javascript:document.body.style.setProperty(\"background-color\", \"black\");")
+                        super.onPageFinished(view, url)
                     }
                 }
                 webChromeClient = object: WebChromeClient() {
@@ -105,7 +156,7 @@ internal fun TwitchPlayer(
                 settings.domStorageEnabled = true
                 settings.cacheMode = WebSettings.LOAD_NO_CACHE
 
-                loadDataWithBaseURL("https://player.twitch.tv/", html, "text/html", "UTF-8", null)
+                loadDataWithBaseURL("https://player.twitch.tv/", htmlString, "text/html", "UTF-8", null)
             }
         },
         update = {}

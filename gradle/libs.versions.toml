@@ -18,6 +18,7 @@ androidxComposeViewModel = "2.8.3"
 androidxComposeHiltNavigation = "1.2.0"
 splashScreen = "1.2.0-alpha01"
 serialization = "1.7.3"
+coil-kt = "3.0.0-rc02"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -57,6 +58,8 @@ androidx-compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-v
 androidx-compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxComposeHiltNavigation" }
 androidx-core-splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+coil-kt = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil-kt" }
+coil-kt-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil-kt" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

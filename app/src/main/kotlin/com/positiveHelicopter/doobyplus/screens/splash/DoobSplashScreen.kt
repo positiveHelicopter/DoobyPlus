@@ -1,7 +1,5 @@
 package com.positiveHelicopter.doobyplus.screens.splash
 
-import android.net.Uri
-import android.widget.VideoView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
@@ -9,12 +7,15 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import coil3.compose.AsyncImage
+import coil3.gif.onAnimationEnd
+import coil3.gif.repeatCount
+import coil3.request.ImageRequest
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 
@@ -35,23 +36,19 @@ internal fun DoobSplashScreen(
         modifier = modifier,
         contentAlignment = Alignment.Companion.TopStart
     ) {
-        AndroidView(modifier = modifier
-            .scale(scaleX = 1.7f, scaleY = 1.0f)
+        val request = ImageRequest.Builder(context)
+            .data(R.raw.jerboa_launch)
+            .repeatCount(0)
+            .onAnimationEnd(endSplash)
+            .build()
+        AsyncImage(
+            modifier = modifier
             .height(config.screenHeightDp.dp + topInset + botInset),
-            factory = {
-                val videoView = VideoView(context)
-                val videoUri =
-                    Uri.parse("android.resource://${context.packageName}/${R.raw.jerboa_launch}")
-                videoView.setVideoURI(videoUri)
-                videoView.setOnPreparedListener {
-                    it.start()
-                }
-                videoView.setOnCompletionListener {
-                    endSplash()
-                }
-                videoView
-            },
-            update = {})
+            model = request,
+            contentDescription = "",
+            contentScale = ContentScale.FillHeight,
+            clipToBounds = true
+        )
     }
 }
 

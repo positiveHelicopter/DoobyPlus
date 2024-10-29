@@ -1,7 +1,6 @@
 package com.positiveHelicopter.doobyplus.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -16,6 +15,9 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -42,26 +44,36 @@ import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 @Composable
 internal fun DoobApp(
     modifier: Modifier = Modifier,
-    setOrientation: (Int) -> Unit = {}
+    setOrientation: (Int) -> Unit = {},
+    hideSystemBars: () -> Unit = {},
+    openTwitch: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val background = painterResource(R.drawable.doob_background)
+    var hideBottomBar by rememberSaveable { mutableStateOf(false) }
     Scaffold(modifier = modifier,
         bottomBar = { DoobBottomBar(
             navBackStackEntry = navBackStackEntry,
             navigateToWatch = navController::navigateToWatch,
             navigateToSocials = navController::navigateToSocials,
-            navigateToSettings = navController::navigateToSettings
+            navigateToSettings = navController::navigateToSettings,
+            isHidden = hideBottomBar
         ) },
         containerColor = colorResource(id = R.color.backgroundColor)) { innerPadding ->
         NavHost(
-            modifier = modifier.fillMaxSize().padding(innerPadding)
+            modifier = modifier.fillMaxSize()
                 .paint(painter = background, contentScale = ContentScale.FillWidth),
             navController = navController,
             startDestination = WATCH_ROUTE
         ) {
-            watchScreen(setOrientation)
+            watchScreen(
+                innerPadding = innerPadding,
+                setOrientation = setOrientation,
+                toggleBottomBarHidden = { hideBottomBar = !hideBottomBar },
+                hideSystemBars = hideSystemBars,
+                openTwitch = openTwitch
+            )
             socialsScreen(setOrientation)
             settingsScreen(setOrientation)
         }
@@ -74,8 +86,10 @@ internal fun DoobBottomBar(
     navBackStackEntry: NavBackStackEntry?,
     navigateToWatch: () -> Unit = {},
     navigateToSocials: () -> Unit = {},
-    navigateToSettings: () -> Unit = {}
+    navigateToSettings: () -> Unit = {},
+    isHidden: Boolean = false
 ) {
+    if (isHidden) return
     val items = listOf(
         DoobNavigationBarItem(
             unselectedIcon = Icons.Outlined.Home,

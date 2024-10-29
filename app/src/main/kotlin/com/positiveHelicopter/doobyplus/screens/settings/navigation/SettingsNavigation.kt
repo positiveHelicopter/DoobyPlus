@@ -8,7 +8,7 @@ import com.positiveHelicopter.doobyplus.screens.settings.SettingsScreen
 internal const val SETTINGS_ROUTE = "settings"
 
 internal fun NavController.navigateToSettings() {
-    navigate(SETTINGS_ROUTE)
+    navigate(SETTINGS_ROUTE) { popBackStack() }
 }
 
 internal fun NavGraphBuilder.settingsScreen() {

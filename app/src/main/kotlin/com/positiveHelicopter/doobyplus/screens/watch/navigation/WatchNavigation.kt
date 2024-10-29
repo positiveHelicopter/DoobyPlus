@@ -8,11 +8,11 @@ import com.positiveHelicopter.doobyplus.screens.watch.WatchScreen
 internal const val WATCH_ROUTE = "watch"
 
 internal fun NavController.navigateToWatch() {
-    navigate(WATCH_ROUTE)
+    navigate(WATCH_ROUTE) { popBackStack() }
 }
 
-internal fun NavGraphBuilder.watchScreen() {
+internal fun NavGraphBuilder.watchScreen(setOrientation: (Int) -> Unit = {}) {
     composable(WATCH_ROUTE) {
-        WatchScreen()
+        WatchScreen(setOrientation = setOrientation)
     }
 }

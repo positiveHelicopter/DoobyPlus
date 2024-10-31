@@ -17,7 +17,11 @@ internal fun NavGraphBuilder.socialsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {}
 ) {
-    composable(SOCIALS_ROUTE) {
+    composable(
+        SOCIALS_ROUTE,
+        enterTransition = null,
+        exitTransition = null
+    ) {
         SocialsScreen(
             innerPadding = innerPadding,
             setOrientation = setOrientation

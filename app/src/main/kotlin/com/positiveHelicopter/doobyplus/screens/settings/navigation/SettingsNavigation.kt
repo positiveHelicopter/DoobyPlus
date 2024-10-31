@@ -1,5 +1,7 @@
 package com.positiveHelicopter.doobyplus.screens.settings.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -12,7 +14,10 @@ internal fun NavController.navigateToSettings() {
 }
 
 internal fun NavGraphBuilder.settingsScreen(setOrientation: (Int) -> Unit = {}) {
-    composable(SETTINGS_ROUTE) {
+    composable(SETTINGS_ROUTE,
+        enterTransition = { slideInHorizontally(initialOffsetX = {it}) },
+        exitTransition = { slideOutHorizontally(targetOffsetX = {it}) }
+    ) {
         SettingsScreen(setOrientation = setOrientation)
     }
 }

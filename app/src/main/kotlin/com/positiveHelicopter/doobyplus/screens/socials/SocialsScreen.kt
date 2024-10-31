@@ -64,7 +64,6 @@ internal fun SocialsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SocialsScreen(
     modifier: Modifier = Modifier,
@@ -102,28 +101,11 @@ internal fun SocialsScreen(
                 selectedTabIndex = selectedTabIndex,
                 updateSelectedPrimaryTabIndex = updateSelectedPrimaryTabIndex
             )
-            SecondaryTabRow(
-                selectedTabIndex = tabs[selectedTabIndex].selectedIndex,
-                containerColor = colorResource(R.color.color_almost_black),
-                indicator = {
-                    TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(tabs[selectedTabIndex].selectedIndex, matchContentSize = false),
-                        color = colorResource(tabs[selectedTabIndex].color)
-                    )
-                },
-                divider = {}
-            ) {
-                tabs[selectedTabIndex].subTabs.forEachIndexed { index, s ->
-                    Tab(text = { Text(s, color = colorResource(R.color.white)) },
-                        selected = tabs[selectedTabIndex].selectedIndex == index,
-                        onClick = {
-                            tabs[selectedTabIndex] = tabs[selectedTabIndex]
-                                .copy(selectedIndex = index)
-                        },
-                        interactionSource = NoRippleInteractionSource()
-                    )
-                }
-            }
+            SocialsSecondaryTabRow(
+                modifier = modifier,
+                tabs = tabs,
+                selectedTabIndex = selectedTabIndex
+            )
         }
     }
 }
@@ -210,6 +192,39 @@ internal fun SocialsPrimaryTabRow(
                 ) },
                 selected = selected,
                 onClick = { updateSelectedPrimaryTabIndex(index) },
+                interactionSource = NoRippleInteractionSource()
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun SocialsSecondaryTabRow(
+    modifier: Modifier = Modifier,
+    tabs: MutableList<SocialsTab>,
+    selectedTabIndex: Int
+) {
+    SecondaryTabRow(
+        modifier = modifier,
+        selectedTabIndex = tabs[selectedTabIndex].selectedIndex,
+        containerColor = colorResource(R.color.color_almost_black),
+        indicator = {
+            TabRowDefaults.SecondaryIndicator(
+                modifier = Modifier.tabIndicatorOffset(
+                    tabs[selectedTabIndex].selectedIndex, matchContentSize = false),
+                color = colorResource(tabs[selectedTabIndex].color)
+            )
+        },
+        divider = {}
+    ) {
+        tabs[selectedTabIndex].subTabs.forEachIndexed { index, s ->
+            Tab(text = { Text(s, color = colorResource(R.color.white)) },
+                selected = tabs[selectedTabIndex].selectedIndex == index,
+                onClick = {
+                    tabs[selectedTabIndex] = tabs[selectedTabIndex]
+                        .copy(selectedIndex = index)
+                },
                 interactionSource = NoRippleInteractionSource()
             )
         }

@@ -1,6 +1,8 @@
 package com.positiveHelicopter.doobyplus.screens.socials
 
 import android.content.pm.ActivityInfo
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -112,6 +114,7 @@ internal fun SocialsScreen(
     val pagerState = rememberPagerState(pageCount = { tabs[selectedTabIndex].subTabs.size })
     LaunchedEffect(pagerState, selectedTabIndex) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
+            if (pagerState.isScrollInProgress) return@collect
             tabs[selectedTabIndex] = tabs[selectedTabIndex]
                 .copy(selectedIndex = page)
         }
@@ -143,7 +146,10 @@ internal fun SocialsScreen(
                 selectedTabIndex = selectedTabIndex,
                 scrollToPage = {
                     coroutineScope.launch {
-                        pagerState.scrollToPage(it)
+                        pagerState.animateScrollToPage(it, animationSpec = tween(
+                            durationMillis = 1000,
+                            easing = FastOutSlowInEasing
+                        ))
                     }
                 }
             )

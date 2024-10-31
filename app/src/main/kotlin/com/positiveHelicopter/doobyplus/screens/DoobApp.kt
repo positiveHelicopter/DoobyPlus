@@ -65,7 +65,7 @@ internal fun DoobApp(
             modifier = modifier.fillMaxSize()
                 .paint(painter = background, contentScale = ContentScale.FillWidth),
             navController = navController,
-            startDestination = WATCH_ROUTE
+            startDestination = SOCIALS_ROUTE
         ) {
             watchScreen(
                 innerPadding = innerPadding,
@@ -74,7 +74,10 @@ internal fun DoobApp(
                 hideSystemBars = hideSystemBars,
                 openTwitch = openTwitch
             )
-            socialsScreen(setOrientation)
+            socialsScreen(
+                innerPadding = innerPadding,
+                setOrientation = setOrientation
+            )
             settingsScreen(setOrientation)
         }
     }

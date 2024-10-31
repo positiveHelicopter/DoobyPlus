@@ -10,4 +10,6 @@
 
     <color name="backgroundColor">#25284b</color>
     <color name="colorPrimary">#fdd292</color>
+    <color name="color_light_blue">#b3e1f4</color>
+    <color name="color_light_red">#f17473</color>
 </resources>

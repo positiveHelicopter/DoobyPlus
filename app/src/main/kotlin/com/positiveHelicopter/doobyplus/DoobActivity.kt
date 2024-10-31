@@ -9,6 +9,7 @@ import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -26,7 +27,8 @@ class DoobActivity: ComponentActivity() {
             DoobApp(
                 setOrientation = ::setOrientation,
                 hideSystemBars = ::hideSystemBars,
-                openTwitch = ::openTwitch
+                openTwitch = ::openTwitch,
+                launchCustomTab = ::launchCustomTab
             )
         }
     }
@@ -47,6 +49,15 @@ class DoobActivity: ComponentActivity() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
+            //show error message
+        }
+    }
+
+    private fun launchCustomTab(url: String) {
+        try {
+            val intent = CustomTabsIntent.Builder().build()
+            intent.launchUrl(this, Uri.parse(url))
+        } catch (e: Exception) {
             //show error message
         }
     }

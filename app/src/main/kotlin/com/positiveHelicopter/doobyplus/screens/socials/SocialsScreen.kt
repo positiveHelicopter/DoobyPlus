@@ -3,6 +3,7 @@ package com.positiveHelicopter.doobyplus.screens.socials
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
@@ -50,7 +54,11 @@ import androidx.compose.ui.zIndex
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
+import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
+import com.positiveHelicopter.doobyplus.ui.SocialsCard
+import com.positiveHelicopter.doobyplus.utility.convertDurationToHHmm
+import com.positiveHelicopter.doobyplus.utility.convertIsoToDDMMYYYYHHmm
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,11 +66,13 @@ internal fun SocialsScreen(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
+    launchCustomTab: (String) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     SocialsScreen(
         modifier = modifier,
+        launchCustomTab = launchCustomTab,
         innerPadding = innerPadding,
         logoFontFamily = FontFamily(Font(R.font.school_bell)),
         selectedTabIndex = selectedTabIndex,
@@ -75,6 +85,7 @@ internal fun SocialsScreen(
 @Composable
 internal fun SocialsScreen(
     modifier: Modifier = Modifier,
+    launchCustomTab: (String) -> Unit = {},
     innerPadding: PaddingValues = PaddingValues(0.dp),
     logoFontFamily: FontFamily?,
     selectedTabIndex: Int,
@@ -138,7 +149,8 @@ internal fun SocialsScreen(
             )
             SocialsViewPager(
                 modifier = modifier.fillMaxSize(),
-                pagerState = pagerState
+                pagerState = pagerState,
+                launchCustomTab = launchCustomTab
             )
         }
     }
@@ -253,7 +265,7 @@ internal fun SocialsSecondaryTabRow(
         divider = {}
     ) {
         tabs[selectedTabIndex].subTabs.forEachIndexed { index, s ->
-            Tab(text = { Text(s, color = colorResource(R.color.white)) },
+            Tab(text = { Text(s, color = colorResource(R.color.color_white_faded)) },
                 selected = tabs[selectedTabIndex].selectedIndex == index,
                 onClick = {
                     tabs[selectedTabIndex] = tabs[selectedTabIndex]
@@ -269,15 +281,39 @@ internal fun SocialsSecondaryTabRow(
 @Composable
 internal fun SocialsViewPager(
     modifier: Modifier = Modifier,
-    pagerState: PagerState
+    pagerState: PagerState,
+    launchCustomTab: (String) -> Unit = {},
 ) {
     HorizontalPager(
         state = pagerState,
         pageSize = PageSize.Fill,
         modifier = modifier
-            .background(colorResource(R.color.color_almost_black_faded))
-    ) { page ->
-        Text(text = page.toString())
+            .background(colorResource(R.color.color_almost_black_faded)),
+        verticalAlignment = Alignment.Top
+    ) { _ ->
+        LazyVerticalGrid(
+            modifier = modifier.padding(top = 20.dp),
+            columns = GridCells.Fixed(2),
+        ) {
+            val videos = listOf(
+                TwitchVideo(),
+                TwitchVideo(title = "dooby test \uD83C\uDF83 retro halloween flash games"),
+                TwitchVideo(),
+                TwitchVideo(),
+                TwitchVideo()
+            )
+            items(videos) {
+                SocialsCard(
+                    modifier = modifier.clickable(
+                        onClick = { launchCustomTab(it.url) }
+                    ),
+                    title = it.title,
+                    date = it.date.convertIsoToDDMMYYYYHHmm(),
+                    thumbnailUrl = it.thumbnailUrl,
+                    duration = it.duration.convertDurationToHHmm()
+                )
+            }
+        }
     }
 }
 

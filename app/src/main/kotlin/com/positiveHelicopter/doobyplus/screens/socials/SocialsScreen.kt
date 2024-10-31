@@ -292,8 +292,9 @@ internal fun SocialsViewPager(
         verticalAlignment = Alignment.Top
     ) { _ ->
         LazyVerticalGrid(
-            modifier = modifier.padding(top = 20.dp),
+            modifier = modifier,
             columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(top = 20.dp)
         ) {
             val videos = listOf(
                 TwitchVideo(),

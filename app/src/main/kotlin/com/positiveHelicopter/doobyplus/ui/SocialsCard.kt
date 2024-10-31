@@ -34,7 +34,7 @@ internal fun SocialsCard(
     duration: String = "",
 ) {
     OutlinedCard(
-        modifier = modifier.wrapContentHeight().fillMaxWidth()
+        modifier = Modifier.wrapContentHeight().fillMaxWidth()
             .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
         border = BorderStroke(width = 1.dp, color = colorResource(R.color.black)),
         colors = CardDefaults.outlinedCardColors().copy(
@@ -42,11 +42,11 @@ internal fun SocialsCard(
         )
     ) {
         Column(modifier = modifier.fillMaxSize()) {
-            Box(modifier = modifier.fillMaxWidth().heightIn(min = 100.dp, max = 120.dp)) {
+            Box(modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 120.dp)) {
                 AsyncImage(
                     model = thumbnailUrl,
                     contentDescription = title,
-                    modifier = modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds
                 )
                 Text(
@@ -63,7 +63,7 @@ internal fun SocialsCard(
                 )
             }
             Text(
-                modifier = modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
                 text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -72,7 +72,7 @@ internal fun SocialsCard(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
                 text = date,
                 color = colorResource(R.color.color_grey_faded),

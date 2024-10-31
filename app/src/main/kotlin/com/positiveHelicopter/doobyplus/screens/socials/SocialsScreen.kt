@@ -152,9 +152,9 @@ internal fun DoobLogo(
     Box(modifier = modifier) {
         Text(
             modifier = modifier,
-            text = "DOOBY3D",
+            text = "DOOBY+",
             style = TextStyle.Default.copy(
-                fontSize = 45.sp,
+                fontSize = 44.sp,
                 drawStyle = Stroke(
                     miter = 10f,
                     width = 7f,
@@ -181,10 +181,7 @@ internal fun DoobLogo(
                 ) { append("Y") }
                 withStyle(
                     style = SpanStyle(color = colorResource(R.color.color_light_blue))
-                ) { append("3") }
-                withStyle(
-                    style = SpanStyle(color = colorResource(R.color.color_light_red))
-                ) { append("D") }
+                ) { append("+") }
             },
             fontSize = 45.sp,
             fontFamily = logoFontFamily

@@ -113,8 +113,7 @@ internal fun SocialsScreen(
     }
     val pagerState = rememberPagerState(pageCount = { tabs[selectedTabIndex].subTabs.size })
     LaunchedEffect(pagerState, selectedTabIndex) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (pagerState.isScrollInProgress) return@collect
+        snapshotFlow { pagerState.targetPage }.collect { page ->
             tabs[selectedTabIndex] = tabs[selectedTabIndex]
                 .copy(selectedIndex = page)
         }

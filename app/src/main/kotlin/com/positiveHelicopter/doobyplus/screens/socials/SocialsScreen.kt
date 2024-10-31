@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SecondaryTabRow
@@ -90,11 +93,15 @@ internal fun SocialsScreen(
             )
         )
     }
-    Column(modifier = modifier.fillMaxSize().padding(innerPadding)
+    Column(modifier = modifier
+        .fillMaxSize()
+        .padding(innerPadding)
         .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         DoobLogo(logoFontFamily = logoFontFamily)
-        Column(modifier = modifier.padding(vertical = 20.dp).fillMaxSize()) {
+        Column(modifier = modifier
+            .padding(top = 20.dp)
+            .fillMaxSize()) {
             SocialsPrimaryTabRow(
                 modifier = modifier,
                 tabs= tabs,
@@ -105,6 +112,10 @@ internal fun SocialsScreen(
                 modifier = modifier,
                 tabs = tabs,
                 selectedTabIndex = selectedTabIndex
+            )
+            SocialsViewPager(
+                modifier = modifier.fillMaxSize(),
+                pageCount = tabs[selectedTabIndex].subTabs.size
             )
         }
     }
@@ -170,11 +181,13 @@ internal fun SocialsPrimaryTabRow(
         containerColor = colorResource(android.R.color.transparent),
         divider = {},
         indicator = { tabPositions ->
-            Box(Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
-                .fillMaxHeight()
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .zIndex(-1f)
-                .background(colorResource(tabs[selectedTabIndex].color))) {}
+            Box(
+                Modifier
+                    .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .zIndex(-1f)
+                    .background(colorResource(tabs[selectedTabIndex].color))) {}
         }
     ) {
         tabs.forEachIndexed { index, data ->
@@ -228,6 +241,21 @@ internal fun SocialsSecondaryTabRow(
                 interactionSource = NoRippleInteractionSource()
             )
         }
+    }
+}
+
+@Composable
+internal fun SocialsViewPager(
+    modifier: Modifier = Modifier,
+    pageCount: Int
+) {
+    val pagerState = rememberPagerState(pageCount = { pageCount })
+    HorizontalPager(
+        state = pagerState,
+        pageSize = PageSize.Fill,
+        modifier = modifier
+            .background(colorResource(R.color.color_almost_black_faded))
+    ) { _ ->
     }
 }
 

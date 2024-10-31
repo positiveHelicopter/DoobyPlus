@@ -11,13 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,21 +42,88 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
+import com.positiveHelicopter.doobyplus.model.SocialsTab
+import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 
 @Composable
 internal fun SocialsScreen(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    logoFontFamily: FontFamily? = FontFamily(Font(R.font.school_bell))
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    SocialsScreen(
+        modifier = modifier,
+        innerPadding = innerPadding,
+        logoFontFamily = FontFamily(Font(R.font.school_bell)),
+        selectedTabIndex = selectedTabIndex,
+        updateSelectedPrimaryTabIndex = {
+            selectedTabIndex = it
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun SocialsScreen(
+    modifier: Modifier = Modifier,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
+    logoFontFamily: FontFamily?,
+    selectedTabIndex: Int,
+    updateSelectedPrimaryTabIndex: (Int) -> Unit
+) {
+    val tabs = remember {
+        mutableStateListOf(
+            SocialsTab(
+                title = "Youtube",
+                icon = R.drawable.youtube_logo,
+                monoIcon = R.drawable.youtube_logo_mono,
+                color = R.color.youtube_color,
+                subTabs = listOf("Videos", "Shorts", "Live")
+            ),
+            SocialsTab(
+                title = "Twitch",
+                icon = R.drawable.twitch_logo,
+                monoIcon = R.drawable.twitch_logo_mono,
+                color = R.color.twitch_color,
+                subTabs = listOf("Videos", "Clips")
+            )
+        )
+    }
     Column(modifier = modifier.fillMaxSize().padding(innerPadding)
         .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         DoobLogo(logoFontFamily = logoFontFamily)
         Column(modifier = modifier.padding(vertical = 20.dp).fillMaxSize()) {
-            SocialsPrimaryTabRow(modifier)
+            SocialsPrimaryTabRow(
+                modifier = modifier,
+                tabs= tabs,
+                selectedTabIndex = selectedTabIndex,
+                updateSelectedPrimaryTabIndex = updateSelectedPrimaryTabIndex
+            )
+            SecondaryTabRow(
+                selectedTabIndex = tabs[selectedTabIndex].selectedIndex,
+                containerColor = colorResource(R.color.color_almost_black),
+                indicator = {
+                    TabRowDefaults.SecondaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(tabs[selectedTabIndex].selectedIndex, matchContentSize = false),
+                        color = colorResource(tabs[selectedTabIndex].color)
+                    )
+                },
+                divider = {}
+            ) {
+                tabs[selectedTabIndex].subTabs.forEachIndexed { index, s ->
+                    Tab(text = { Text(s, color = colorResource(R.color.white)) },
+                        selected = tabs[selectedTabIndex].selectedIndex == index,
+                        onClick = {
+                            tabs[selectedTabIndex] = tabs[selectedTabIndex]
+                                .copy(selectedIndex = index)
+                        },
+                        interactionSource = NoRippleInteractionSource()
+                    )
+                }
+            }
         }
     }
 }
@@ -107,23 +178,11 @@ internal fun DoobLogo(
 
 @Composable
 internal fun SocialsPrimaryTabRow(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tabs: List<SocialsTab>,
+    selectedTabIndex: Int,
+    updateSelectedPrimaryTabIndex: (Int) -> Unit
 ) {
-    val tabs = listOf(
-        SocialsTab(
-            title = "Youtube",
-            icon = R.drawable.youtube_logo,
-            monoIcon = R.drawable.youtube_logo_mono,
-            color = R.color.youtube_color
-        ),
-        SocialsTab(
-            title = "Twitch",
-            icon = R.drawable.twitch_logo,
-            monoIcon = R.drawable.twitch_logo_mono,
-            color = R.color.twitch_color
-        )
-    )
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     TabRow(
         selectedTabIndex = selectedTabIndex,
         containerColor = colorResource(android.R.color.transparent),
@@ -150,7 +209,8 @@ internal fun SocialsPrimaryTabRow(
                     contentDescription = ""
                 ) },
                 selected = selected,
-                onClick = { selectedTabIndex = index }
+                onClick = { updateSelectedPrimaryTabIndex(index) },
+                interactionSource = NoRippleInteractionSource()
             )
         }
     }
@@ -160,13 +220,8 @@ internal fun SocialsPrimaryTabRow(
 @Composable
 internal fun SocialsScreenPreview() {
     SocialsScreen(
-        logoFontFamily = null
+        logoFontFamily = null,
+        selectedTabIndex = 0,
+        updateSelectedPrimaryTabIndex = {}
     )
 }
-
-data class SocialsTab(
-    val title: String,
-    val icon: Int,
-    val monoIcon: Int,
-    val color: Int
-)

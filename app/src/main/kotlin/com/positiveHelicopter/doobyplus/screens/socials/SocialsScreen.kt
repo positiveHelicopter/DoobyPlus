@@ -27,18 +27,22 @@ import com.positiveHelicopter.doobyplus.R
 internal fun SocialsScreen(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    setOrientation: (Int) -> Unit = {}
+    setOrientation: (Int) -> Unit = {},
+    logoFontFamily: FontFamily? = FontFamily(Font(R.font.school_bell))
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Box(modifier = modifier.fillMaxSize().padding(innerPadding)
         .padding(top = 20.dp),
         contentAlignment = Alignment.TopCenter) {
-        DoobLogo()
+        DoobLogo(logoFontFamily = logoFontFamily)
     }
 }
 
 @Composable
-internal fun DoobLogo(modifier: Modifier = Modifier) {
+internal fun DoobLogo(
+    modifier: Modifier = Modifier,
+    logoFontFamily: FontFamily? = null
+) {
     Text(
         modifier = modifier,
         text = "DOOBY3D",
@@ -51,7 +55,7 @@ internal fun DoobLogo(modifier: Modifier = Modifier) {
             ),
             color = colorResource(R.color.black)
         ),
-        fontFamily = FontFamily(Font(R.font.school_bell))
+        fontFamily = logoFontFamily
     )
     Text(
         modifier = modifier,
@@ -76,12 +80,14 @@ internal fun DoobLogo(modifier: Modifier = Modifier) {
             ) { append("D") }
         },
         fontSize = 45.sp,
-        fontFamily = FontFamily(Font(R.font.school_bell))
+        fontFamily = logoFontFamily
     )
 }
 
 @DoobyPreview
 @Composable
 internal fun SocialsScreenPreview() {
-    SocialsScreen()
+    SocialsScreen(
+        logoFontFamily = null
+    )
 }

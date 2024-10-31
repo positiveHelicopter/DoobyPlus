@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,11 +23,14 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +51,7 @@ import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun SocialsScreen(
@@ -89,10 +94,18 @@ internal fun SocialsScreen(
                 icon = R.drawable.twitch_logo,
                 monoIcon = R.drawable.twitch_logo_mono,
                 color = R.color.twitch_color,
-                subTabs = listOf("Videos", "Clips")
+                subTabs = listOf("Videos", "Clips"),
             )
         )
     }
+    val pagerState = rememberPagerState(pageCount = { tabs[selectedTabIndex].subTabs.size })
+    LaunchedEffect(pagerState, selectedTabIndex) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            tabs[selectedTabIndex] = tabs[selectedTabIndex]
+                .copy(selectedIndex = page)
+        }
+    }
+    val coroutineScope = rememberCoroutineScope()
     Column(modifier = modifier
         .fillMaxSize()
         .padding(innerPadding)
@@ -106,16 +119,26 @@ internal fun SocialsScreen(
                 modifier = modifier,
                 tabs= tabs,
                 selectedTabIndex = selectedTabIndex,
-                updateSelectedPrimaryTabIndex = updateSelectedPrimaryTabIndex
+                updateSelectedPrimaryTabIndex = {
+                    coroutineScope.launch {
+                        updateSelectedPrimaryTabIndex(it)
+                        pagerState.scrollToPage(0)
+                    }
+                }
             )
             SocialsSecondaryTabRow(
                 modifier = modifier,
                 tabs = tabs,
-                selectedTabIndex = selectedTabIndex
+                selectedTabIndex = selectedTabIndex,
+                scrollToPage = {
+                    coroutineScope.launch {
+                        pagerState.scrollToPage(it)
+                    }
+                }
             )
             SocialsViewPager(
                 modifier = modifier.fillMaxSize(),
-                pageCount = tabs[selectedTabIndex].subTabs.size
+                pagerState = pagerState
             )
         }
     }
@@ -216,7 +239,8 @@ internal fun SocialsPrimaryTabRow(
 internal fun SocialsSecondaryTabRow(
     modifier: Modifier = Modifier,
     tabs: MutableList<SocialsTab>,
-    selectedTabIndex: Int
+    selectedTabIndex: Int,
+    scrollToPage: (Int) -> Unit
 ) {
     SecondaryTabRow(
         modifier = modifier,
@@ -237,6 +261,7 @@ internal fun SocialsSecondaryTabRow(
                 onClick = {
                     tabs[selectedTabIndex] = tabs[selectedTabIndex]
                         .copy(selectedIndex = index)
+                    scrollToPage(index)
                 },
                 interactionSource = NoRippleInteractionSource()
             )
@@ -247,15 +272,15 @@ internal fun SocialsSecondaryTabRow(
 @Composable
 internal fun SocialsViewPager(
     modifier: Modifier = Modifier,
-    pageCount: Int
+    pagerState: PagerState
 ) {
-    val pagerState = rememberPagerState(pageCount = { pageCount })
     HorizontalPager(
         state = pagerState,
         pageSize = PageSize.Fill,
         modifier = modifier
             .background(colorResource(R.color.color_almost_black_faded))
-    ) { _ ->
+    ) { page ->
+        Text(text = page.toString())
     }
 }
 

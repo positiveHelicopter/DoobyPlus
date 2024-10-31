@@ -12,4 +12,7 @@
     <color name="colorPrimary">#fdd292</color>
     <color name="color_light_blue">#b3e1f4</color>
     <color name="color_light_red">#f17473</color>
+
+    <color name="twitch_color">#9146FF</color>
+    <color name="youtube_color">#FF0000</color>
 </resources>

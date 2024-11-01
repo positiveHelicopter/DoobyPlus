@@ -11,3 +11,4 @@ local.properties
 build-logic/convention/build
 .kotlin
 app/src/main/res/values/keys.xml
+google-services.json

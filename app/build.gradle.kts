@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.coil.kt.network.okhttp)
     implementation(libs.coil.kt.gif)
     implementation(libs.custom.tab.browser)
+    implementation(libs.proto.preference.datastore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

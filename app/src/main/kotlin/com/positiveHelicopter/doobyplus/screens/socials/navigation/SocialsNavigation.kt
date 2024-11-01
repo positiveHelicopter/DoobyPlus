@@ -16,7 +16,8 @@ internal fun NavController.navigateToSocials() {
 internal fun NavGraphBuilder.socialsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     composable(
         SOCIALS_ROUTE,
@@ -26,7 +27,8 @@ internal fun NavGraphBuilder.socialsScreen(
         SocialsScreen(
             innerPadding = innerPadding,
             setOrientation = setOrientation,
-            launchCustomTab = launchCustomTab
+            launchCustomTab = launchCustomTab,
+            askNotificationPermission = askNotificationPermission
         )
     }
 }

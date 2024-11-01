@@ -1,6 +1,7 @@
 package com.positiveHelicopter.doobyplus.screens.socials
 
 import android.content.pm.ActivityInfo
+import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -53,6 +55,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
@@ -66,13 +70,17 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SocialsScreen(
     modifier: Modifier = Modifier,
+    viewModel: SocialsViewModel = hiltViewModel(),
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val socialsState by viewModel.uiState.collectAsStateWithLifecycle()
     SocialsScreen(
+        socialsState = socialsState,
         modifier = modifier,
         launchCustomTab = launchCustomTab,
         innerPadding = innerPadding,
@@ -80,19 +88,39 @@ internal fun SocialsScreen(
         selectedTabIndex = selectedTabIndex,
         updateSelectedPrimaryTabIndex = {
             selectedTabIndex = it
-        }
+        },
+        askNotificationPermission = askNotificationPermission,
+        setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification
     )
 }
 
 @Composable
 internal fun SocialsScreen(
+    socialsState: SocialsState,
     modifier: Modifier = Modifier,
     launchCustomTab: (String) -> Unit = {},
     innerPadding: PaddingValues = PaddingValues(0.dp),
     logoFontFamily: FontFamily?,
     selectedTabIndex: Int,
-    updateSelectedPrimaryTabIndex: (Int) -> Unit
+    updateSelectedPrimaryTabIndex: (Int) -> Unit,
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
+    setIsFirstTimeNotification: (Boolean) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    when(socialsState) {
+        is SocialsState.Loading -> {
+            // Loading state
+        }
+        is SocialsState.Success -> {
+            if(socialsState.data.userPreference.isFirstTimeNotification) {
+                askNotificationPermission { requestPermission ->
+                    Toast.makeText(context, "Welcome to Dooby+", Toast.LENGTH_LONG).show()
+                    setIsFirstTimeNotification(false)
+                    requestPermission()
+                }
+            }
+        }
+    }
     val tabs = remember {
         mutableStateListOf(
             SocialsTab(
@@ -327,6 +355,7 @@ internal fun SocialsViewPager(
 @Composable
 internal fun SocialsScreenPreview() {
     SocialsScreen(
+        socialsState = SocialsState.Loading,
         logoFontFamily = null,
         selectedTabIndex = 0,
         updateSelectedPrimaryTabIndex = {}

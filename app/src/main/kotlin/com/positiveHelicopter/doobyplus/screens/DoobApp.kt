@@ -47,7 +47,8 @@ internal fun DoobApp(
     setOrientation: (Int) -> Unit = {},
     hideSystemBars: () -> Unit = {},
     openTwitch: () -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -78,7 +79,8 @@ internal fun DoobApp(
             socialsScreen(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
-                launchCustomTab = launchCustomTab
+                launchCustomTab = launchCustomTab,
+                askNotificationPermission = askNotificationPermission
             )
             settingsScreen(setOrientation)
         }

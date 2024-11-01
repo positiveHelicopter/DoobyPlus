@@ -22,6 +22,7 @@ coil-kt = "3.0.0-rc02"
 custom-tab-browser = "1.5.0"
 google-services = "4.4.2"
 firebase-bom = "33.5.1"
+proto-preference-datastore = "1.1.1"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -67,6 +68,7 @@ coil-kt-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "co
 custom-tab-browser = { group = "androidx.browser", name = "browser", version.ref = "custom-tab-browser" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+proto-preference-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "proto-preference-datastore" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

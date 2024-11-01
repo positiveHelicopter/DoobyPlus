@@ -3,22 +3,31 @@ package com.positiveHelicopter.doobyplus
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.positiveHelicopter.doobyplus.screens.DoobApp
 import dagger.hilt.android.AndroidEntryPoint
+import android.Manifest
+import androidx.activity.result.contract.ActivityResultContracts
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")
 class DoobActivity: ComponentActivity() {
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { _: Boolean -> }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,7 +37,8 @@ class DoobActivity: ComponentActivity() {
                 setOrientation = ::setOrientation,
                 hideSystemBars = ::hideSystemBars,
                 openTwitch = ::openTwitch,
-                launchCustomTab = ::launchCustomTab
+                launchCustomTab = ::launchCustomTab,
+                askNotificationPermission = ::askNotificationPermission
             )
         }
     }
@@ -60,5 +70,16 @@ class DoobActivity: ComponentActivity() {
         } catch (e: Exception) {
             //show error message
         }
+    }
+
+    private fun askNotificationPermission(displayDialog: (() -> Unit) -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) return
+        val requestPermission = {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        displayDialog(requestPermission)
     }
 }

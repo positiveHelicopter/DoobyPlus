@@ -16,6 +16,11 @@ internal fun SettingsScreen(
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Box(modifier.fillMaxSize().background(colorResource(android.R.color.white))) {  }
+    //options
+    //Twitch - getNotificationWhenLive, redirectUrlToTwitchApp
+    //Youtube - getNotificationWhenLive, redirectUrlToYoutubeApp
+    //watch? or chat? - watch with youtube or twitch player
+    //credits
 }
 
 @DoobyPreview

@@ -60,7 +60,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
-import com.positiveHelicopter.doobyplus.model.PostMessage
 import com.positiveHelicopter.doobyplus.model.SocialsTab
 import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
@@ -191,7 +190,7 @@ internal fun SocialsScreen(
                 }
             )
             if(tabs[selectedTabIndex].title == "X") {
-                LazyPostsList(modifier = modifier.fillMaxSize())
+                LazyPostsList(modifier = modifier.fillMaxSize(), socialsState = socialsState)
                 return
             }
             SocialsViewPager(
@@ -367,46 +366,13 @@ internal fun SocialsViewPager(
 
 @Composable
 internal fun LazyPostsList(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    socialsState: SocialsState
 ) {
-    val posts = listOf(
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        ),
-        PostMessage(
-            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
-            url = "https://t.co/RzMUobvVW7"
-        )
-    )
+    val posts = when(socialsState) {
+        is SocialsState.Success -> socialsState.data.tweets
+        else -> listOf()
+    }
     LazyColumn(modifier = modifier.background(colorResource(R.color.color_almost_black_faded)),
         contentPadding = PaddingValues(top = 20.dp)) {
         items(posts.size) { index ->

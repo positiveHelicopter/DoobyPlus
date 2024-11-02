@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -59,10 +60,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
+import com.positiveHelicopter.doobyplus.model.PostMessage
 import com.positiveHelicopter.doobyplus.model.SocialsTab
 import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
+import com.positiveHelicopter.doobyplus.ui.SocialsPost
 import com.positiveHelicopter.doobyplus.utility.convertDurationToHHmm
 import com.positiveHelicopter.doobyplus.utility.convertIsoToDDMMYYYYHHmm
 import kotlinx.coroutines.launch
@@ -187,6 +190,10 @@ internal fun SocialsScreen(
                     }
                 }
             )
+            if(tabs[selectedTabIndex].title == "X") {
+                LazyPostsList(modifier = modifier.fillMaxSize())
+                return
+            }
             SocialsViewPager(
                 modifier = modifier.fillMaxSize(),
                 pagerState = pagerState,
@@ -330,7 +337,7 @@ internal fun SocialsViewPager(
         modifier = modifier
             .background(colorResource(R.color.color_almost_black_faded)),
         verticalAlignment = Alignment.Top
-    ) { _ ->
+    ) { page ->
         LazyVerticalGrid(
             modifier = modifier,
             columns = GridCells.Fixed(2),
@@ -354,6 +361,59 @@ internal fun SocialsViewPager(
                     duration = it.duration.convertDurationToHHmm()
                 )
             }
+        }
+    }
+}
+
+@Composable
+internal fun LazyPostsList(
+    modifier: Modifier = Modifier
+) {
+    val posts = listOf(
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        ),
+        PostMessage(
+            text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+            url = "https://t.co/RzMUobvVW7"
+        )
+    )
+    LazyColumn(modifier = modifier.background(colorResource(R.color.color_almost_black_faded)),
+        contentPadding = PaddingValues(top = 20.dp)) {
+        items(posts.size) { index ->
+            SocialsPost(
+                text = posts[index].text,
+                shouldShowImage = index == 0
+            )
         }
     }
 }

@@ -20,6 +20,7 @@ import com.positiveHelicopter.doobyplus.screens.DoobApp
 import dagger.hilt.android.AndroidEntryPoint
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.firebase.messaging.FirebaseMessaging
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")
@@ -41,6 +42,7 @@ class DoobActivity: ComponentActivity() {
                 askNotificationPermission = ::askNotificationPermission
             )
         }
+        getCurrentFirebaseToken()
     }
 
     private fun setOrientation(orientation: Int) {
@@ -66,6 +68,7 @@ class DoobActivity: ComponentActivity() {
     private fun launchCustomTab(url: String) {
         try {
             val intent = CustomTabsIntent.Builder().build()
+            intent.intent.`package` = "com.android.chrome"
             intent.launchUrl(this, Uri.parse(url))
         } catch (e: Exception) {
             //show error message
@@ -81,5 +84,20 @@ class DoobActivity: ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         displayDialog(requestPermission)
+    }
+
+    private fun getCurrentFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if(!task.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            val token = task.result
+            println("Token: $token")
+        }
+        FirebaseMessaging.getInstance().subscribeToTopic("twitch_stream_online").addOnCompleteListener {
+            if (it.isSuccessful) {
+                println("Subscribed to twitch_stream_online")
+            }
+        }
     }
 }

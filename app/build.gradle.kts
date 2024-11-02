@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.doobyplus.android.application)
     alias(libs.plugins.doobyplus.hilt)
     alias(libs.plugins.doobyplus.compose)
+    alias(libs.plugins.doobyplus.firebase)
 }
 
 android {

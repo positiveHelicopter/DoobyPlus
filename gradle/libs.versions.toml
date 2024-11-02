@@ -20,6 +20,8 @@ splashScreen = "1.2.0-alpha01"
 serialization = "1.7.3"
 coil-kt = "3.0.0-rc02"
 custom-tab-browser = "1.5.0"
+google-services = "4.4.2"
+firebase-bom = "33.5.1"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -63,6 +65,8 @@ coil-kt = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "co
 coil-kt-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil-kt" }
 coil-kt-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil-kt" }
 custom-tab-browser = { group = "androidx.browser", name = "browser", version.ref = "custom-tab-browser" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -79,9 +83,11 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 # Plugins defined by this project
 doobyplus-android-application = { id = "doobyplus.android.application", version = "unspecified" }
 doobyplus-hilt = { id = "doobyplus.hilt", version = "unspecified" }
 doobyplus-compose = { id = "doobyplus.compose", version = "unspecified" }
+doobyplus-firebase = {id = "doobyplus.firebase", version = "unspecified" }
 

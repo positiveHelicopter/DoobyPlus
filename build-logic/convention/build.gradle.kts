@@ -38,5 +38,9 @@ gradlePlugin {
             id = "doobyplus.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
+        register("firebase") {
+            id = "doobyplus.firebase"
+            implementationClass = "FireBaseConventionPlugin"
+        }
     }
 }

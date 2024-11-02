@@ -136,6 +136,13 @@ internal fun SocialsScreen(
                 monoIcon = R.drawable.twitch_logo_mono,
                 color = R.color.twitch_color,
                 subTabs = listOf("Videos", "Clips"),
+            ),
+            SocialsTab(
+                title = "X",
+                icon = R.drawable.twitter_logo_black,
+                monoIcon = R.drawable.twitter_logo,
+                color = R.color.black,
+                subTabs = listOf("Posts"),
             )
         )
     }

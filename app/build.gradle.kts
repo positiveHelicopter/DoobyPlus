@@ -7,11 +7,9 @@ plugins {
 
 android {
     namespace = "com.positiveHelicopter.doobyplus"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.positiveHelicopter.doobyplus"
-        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

@@ -87,16 +87,23 @@ class DoobActivity: ComponentActivity() {
     }
 
     private fun getCurrentFirebaseToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if(!task.isSuccessful) {
-                return@addOnCompleteListener
+        FirebaseMessaging.getInstance().apply {
+            token.addOnCompleteListener { task ->
+                if(!task.isSuccessful) {
+                    return@addOnCompleteListener
+                }
+                val token = task.result
+                println("Token: $token")
             }
-            val token = task.result
-            println("Token: $token")
-        }
-        FirebaseMessaging.getInstance().subscribeToTopic("twitch_stream_online").addOnCompleteListener {
-            if (it.isSuccessful) {
-                println("Subscribed to twitch_stream_online")
+            subscribeToTopic("twitch_stream_online").addOnCompleteListener {
+                if (it.isSuccessful) {
+                    println("Subscribed to twitch_stream_online")
+                }
+            }
+            subscribeToTopic("twitter_post").addOnCompleteListener {
+                if (it.isSuccessful) {
+                    println("Subscribed to twitter_post")
+                }
             }
         }
     }

@@ -72,6 +72,7 @@ firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-mes
 proto-preference-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "proto-preference-datastore" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

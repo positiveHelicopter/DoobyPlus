@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">DoobyPlus</string>
 
+    <!-- error messages -->
+    <string name="error_title_custom_tab">Failed to open link</string>
+    <string name="error_message_custom_tab">Unable to find compatible browsers/apps to open link.</string>
+    <string name="error_title_open_twitch">Failed to open Twitch</string>
+    <string name="error_message_open_twitch">The Twitch app needs to be installed on your device to redirect to Twitch.</string>
+
     <!-- credits -->
     <string name="credit_dooby">doob @dooby3D</string>
     <string name="credit_splash_screen">Borksie @BorkNeko</string>

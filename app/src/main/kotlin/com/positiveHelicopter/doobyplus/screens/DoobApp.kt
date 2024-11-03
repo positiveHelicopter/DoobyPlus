@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import com.positiveHelicopter.doobyplus.screens.socials.navigation.socialsScreen
 import com.positiveHelicopter.doobyplus.screens.watch.navigation.WATCH_ROUTE
 import com.positiveHelicopter.doobyplus.screens.watch.navigation.navigateToWatch
 import com.positiveHelicopter.doobyplus.screens.watch.navigation.watchScreen
+import com.positiveHelicopter.doobyplus.ui.ErrorDialog
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 
 @Composable
@@ -46,14 +48,17 @@ internal fun DoobApp(
     modifier: Modifier = Modifier,
     setOrientation: (Int) -> Unit = {},
     hideSystemBars: () -> Unit = {},
-    openTwitch: () -> Unit = {},
-    launchCustomTab: (String) -> Unit = {},
+    openTwitch: ((String, String) -> Unit) -> Unit = {},
+    launchCustomTab: (String, (String, String) -> Unit) -> Unit = { _ ,_ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val background = painterResource(R.drawable.doob_background)
     var hideBottomBar by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorTitle by remember { mutableStateOf("") }
+    var errorText by remember { mutableStateOf("") }
     Scaffold(modifier = modifier,
         bottomBar = { DoobBottomBar(
             navBackStackEntry = navBackStackEntry,
@@ -63,6 +68,11 @@ internal fun DoobApp(
             isHidden = hideBottomBar
         ) },
         containerColor = colorResource(id = R.color.backgroundColor)) { innerPadding ->
+        if (showErrorDialog) {
+            ErrorDialog(title = errorTitle, text = errorText) {
+                showErrorDialog = false
+            }
+        }
         NavHost(
             modifier = modifier.fillMaxSize()
                 .paint(painter = background, contentScale = ContentScale.FillWidth),
@@ -74,12 +84,24 @@ internal fun DoobApp(
                 setOrientation = setOrientation,
                 toggleBottomBarHidden = { hideBottomBar = !hideBottomBar },
                 hideSystemBars = hideSystemBars,
-                openTwitch = openTwitch
+                openTwitch = {
+                    openTwitch { title, text ->
+                        errorTitle = title
+                        errorText = text
+                        showErrorDialog = true
+                    }
+                }
             )
             socialsScreen(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
-                launchCustomTab = launchCustomTab,
+                launchCustomTab = { url ->
+                    launchCustomTab(url) { title, text ->
+                        errorTitle = title
+                        errorText = text
+                        showErrorDialog = true
+                    }
+                },
                 askNotificationPermission = askNotificationPermission
             )
             settingsScreen(setOrientation)

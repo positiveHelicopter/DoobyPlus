@@ -55,23 +55,34 @@ class DoobActivity: ComponentActivity() {
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
-    private fun openTwitch() {
+    private fun openTwitch(
+        onError: (String, String) -> Unit
+    ) {
         try {
             val uri = Uri.parse("twitch://stream/dooby3d")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            //show error message
+            onError(
+                getString(R.string.error_title_open_twitch),
+                getString(R.string.error_message_open_twitch)
+            )
         }
     }
 
-    private fun launchCustomTab(url: String) {
+    private fun launchCustomTab(
+        url: String,
+        onError: (String, String) -> Unit
+    ) {
         try {
             val intent = CustomTabsIntent.Builder().build()
             intent.intent.`package` = "com.android.chrome"
             intent.launchUrl(this, Uri.parse(url))
         } catch (e: Exception) {
-            //show error message
+            onError(
+                getString(R.string.error_title_custom_tab),
+                getString(R.string.error_message_custom_tab)
+            )
         }
     }
 

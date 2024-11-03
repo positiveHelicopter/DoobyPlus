@@ -42,5 +42,9 @@ gradlePlugin {
             id = "doobyplus.firebase"
             implementationClass = "FireBaseConventionPlugin"
         }
+        register("room") {
+            id = "doobyplus.room"
+            implementationClass = "RoomConventionPlugin"
+        }
     }
 }

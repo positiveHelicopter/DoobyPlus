@@ -23,6 +23,7 @@ custom-tab-browser = "1.5.0"
 google-services = "4.4.2"
 firebase-bom = "33.5.1"
 proto-preference-datastore = "1.1.1"
+room_version = "2.6.1"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -69,6 +70,8 @@ custom-tab-browser = { group = "androidx.browser", name = "browser", version.ref
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 proto-preference-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "proto-preference-datastore" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -92,4 +95,5 @@ doobyplus-android-application = { id = "doobyplus.android.application", version 
 doobyplus-hilt = { id = "doobyplus.hilt", version = "unspecified" }
 doobyplus-compose = { id = "doobyplus.compose", version = "unspecified" }
 doobyplus-firebase = {id = "doobyplus.firebase", version = "unspecified" }
+doobyplus-room = { id = "doobyplus.room", version = "unspecified" }
 

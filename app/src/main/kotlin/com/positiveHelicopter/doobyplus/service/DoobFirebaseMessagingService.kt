@@ -37,29 +37,34 @@ class DoobFirebaseMessagingService: FirebaseMessagingService() {
         val title = message.data["title"] ?: return
         val text = message.data["body"] ?: return
         val type = message.data["type"] ?: ""
+
+        val twitch = "twitch"
+        val youtube = "youtube"
+        val twitter = "twitter"
+
         val manager = DoobNotificationManager()
         val channelId = when (type) {
-            "twitch" -> TWITCH_CHANNEL_ID
-            "youtube" -> YOUTUBE_CHANNEL_ID
-            "twitter" -> TWITTER_CHANNEL_ID
+            twitch -> TWITCH_CHANNEL_ID
+            youtube -> YOUTUBE_CHANNEL_ID
+            twitter -> TWITTER_CHANNEL_ID
             else -> DOOB_CHANNEL_ID
         }
         val channelName = when (type) {
-            "twitch" -> TWITCH_CHANNEL_NAME
-            "youtube" -> YOUTUBE_CHANNEL_NAME
-            "twitter" -> TWITTER_CHANNEL_NAME
+            twitch -> TWITCH_CHANNEL_NAME
+            youtube -> YOUTUBE_CHANNEL_NAME
+            twitter -> TWITTER_CHANNEL_NAME
             else -> DOOB_CHANNEL_NAME
         }
         val channelDesc = when (type) {
-            "twitch" -> TWITCH_CHANNEL_DESCRIPTION
-            "youtube" -> YOUTUBE_CHANNEL_DESCRIPTION
-            "twitter" -> TWITTER_CHANNEL_DESCRIPTION
+            twitch -> TWITCH_CHANNEL_DESCRIPTION
+            youtube -> YOUTUBE_CHANNEL_DESCRIPTION
+            twitter -> TWITTER_CHANNEL_DESCRIPTION
             else -> DOOB_CHANNEL_DESCRIPTION
         }
         val notificationId = when (type) {
-            "twitch" -> TWITCH_ONLINE_NOTIFICATION_ID
-            "youtube" -> YOUTUBE_ONLINE_NOTIFICATION_ID
-            "twitter" -> TWITTER_POST_NOTIFICATION_ID
+            twitch -> TWITCH_ONLINE_NOTIFICATION_ID
+            youtube -> YOUTUBE_ONLINE_NOTIFICATION_ID
+            twitter -> TWITTER_POST_NOTIFICATION_ID
             else -> DEFAULT_NOTIFICATION_ID
         }
         manager.createChannel(

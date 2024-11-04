@@ -60,7 +60,8 @@ class SyncWorker @AssistedInject constructor(
                             text = obj["text"] as String? ?: "",
                             url = "",
                             date = obj["date"] as String? ?: "",
-                            timestamp = obj["timestamp"] as Long? ?: -1
+                            timestamp = obj["timestamp"] as Long? ?: -1,
+                            link = obj["link"] as String? ?: ""
                         )
                     } ?: emptyList()
                     socialsRepository.insertTweets(entries)

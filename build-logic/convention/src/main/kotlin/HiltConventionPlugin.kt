@@ -10,6 +10,7 @@ class HiltConventionPlugin: Plugin<Project> {
             pluginManager.apply("com.google.devtools.ksp")
             dependencies {
                 add("ksp", libs.findLibrary("hilt.compiler").get())
+                add("ksp", libs.findLibrary("hilt.work.compiler").get())
                 add("implementation", libs.findLibrary("hilt.core").get())
             }
 

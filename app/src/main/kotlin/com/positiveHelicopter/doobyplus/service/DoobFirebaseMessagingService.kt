@@ -24,7 +24,6 @@ class DoobFirebaseMessagingService: FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         sendRegistrationToServer()
-        println("new token: $token")
     }
 
     private fun sendRegistrationToServer() {
@@ -33,7 +32,6 @@ class DoobFirebaseMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        println("message received: ${message.data}")
         val title = message.data["title"] ?: return
         val text = message.data["body"] ?: return
         val type = message.data["type"] ?: ""

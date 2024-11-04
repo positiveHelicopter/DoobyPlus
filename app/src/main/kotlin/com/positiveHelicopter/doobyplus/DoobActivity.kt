@@ -42,7 +42,6 @@ class DoobActivity: ComponentActivity() {
                 askNotificationPermission = ::askNotificationPermission
             )
         }
-        getCurrentFirebaseToken()
     }
 
     private fun setOrientation(orientation: Int) {
@@ -95,27 +94,5 @@ class DoobActivity: ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         displayDialog(requestPermission)
-    }
-
-    private fun getCurrentFirebaseToken() {
-        FirebaseMessaging.getInstance().apply {
-            token.addOnCompleteListener { task ->
-                if(!task.isSuccessful) {
-                    return@addOnCompleteListener
-                }
-                val token = task.result
-                println("Token: $token")
-            }
-            subscribeToTopic("twitch_stream_online").addOnCompleteListener {
-                if (it.isSuccessful) {
-                    println("Subscribed to twitch_stream_online")
-                }
-            }
-            subscribeToTopic("twitter_post").addOnCompleteListener {
-                if (it.isSuccessful) {
-                    println("Subscribed to twitter_post")
-                }
-            }
-        }
     }
 }

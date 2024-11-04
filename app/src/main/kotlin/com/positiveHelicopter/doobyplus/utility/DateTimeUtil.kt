@@ -2,6 +2,7 @@ package com.positiveHelicopter.doobyplus.utility
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 
 fun String.convertIsoToDDMMMYYYYHHmm(): String {
     try {
@@ -24,4 +25,18 @@ fun String.convertDurationToHHmm(): String {
         }
     }
     return result
+}
+
+fun String.convertTweetDateToDDMMMYYYYHHmm(): String {
+    try {
+        val formatter = DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .appendPattern("MMMM dd, yyyy 'at' hh:mma")
+            .toFormatter()
+        val date = LocalDateTime.parse(this.trim(), formatter)
+        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return this
+    }
 }

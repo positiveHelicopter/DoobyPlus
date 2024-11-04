@@ -19,5 +19,6 @@ fun TweetEntity.asExternalModel() = PostMessage(
     text = text,
     url = url,
     date = date,
-    timestamp = timestamp
+    timestamp = timestamp,
+    link = link
 )

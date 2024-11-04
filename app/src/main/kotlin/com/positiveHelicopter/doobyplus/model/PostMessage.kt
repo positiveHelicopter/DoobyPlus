@@ -4,5 +4,6 @@ data class PostMessage(
     val text: String,
     val url: String,
     val date: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val link: String
 )

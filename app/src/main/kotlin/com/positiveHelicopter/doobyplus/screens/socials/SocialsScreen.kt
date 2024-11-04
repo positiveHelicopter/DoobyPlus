@@ -383,6 +383,8 @@ internal fun LazyPostsList(
         items(posts.size) { index ->
             SocialsPost(
                 text = posts[index].text,
+                date = posts[index].date,
+                link = posts[index].link,
                 shouldShowImage = index == 0,
                 launchCustomTab = launchCustomTab
             )

@@ -28,6 +28,8 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
@@ -35,12 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
+import com.positiveHelicopter.doobyplus.utility.convertTweetDateToDDMMMYYYYHHmm
 import com.positiveHelicopter.doobyplus.utility.findHttpsUrl
 
 @Composable
 internal fun SocialsPost(
     modifier: Modifier = Modifier,
     text: String,
+    date: String,
+    link: String,
     shouldShowImage: Boolean = true,
     launchCustomTab: (String) -> Unit = {},
 ) {
@@ -106,6 +111,16 @@ internal fun SocialsPost(
                     color = colorResource(R.color.color_white_faded),
                     fontSize = 16.sp
                 )
+                Text(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 10.dp, start = 10.dp, end = 15.dp),
+                    text = date.convertTweetDateToDDMMMYYYYHHmm(),
+                    color = colorResource(R.color.color_grey_faded),
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End
+                )
             }
         }
     }
@@ -115,7 +130,9 @@ internal fun SocialsPost(
 @Composable
 internal fun SocialsPostPreview() {
     SocialsPost(
-        text = "This is a post This is a post This is a post This is a post This is a post This is a post"
+        text = "This is a post This is a post This is a post This is a post This is a post This is a post",
+        date = " November 03, 2024 at 01:03PM",
+        link = ""
     )
 }
 

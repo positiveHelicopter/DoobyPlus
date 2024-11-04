@@ -26,7 +26,7 @@ class DoobSocialsRepository @Inject constructor(
     ) { userData, tweets ->
         SocialsData(
             userPreference = userData,
-            tweets = tweets
+            tweets = tweets.sortedByDescending { it.timestamp }
         )
     }
 

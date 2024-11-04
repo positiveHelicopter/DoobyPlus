@@ -190,7 +190,11 @@ internal fun SocialsScreen(
                 }
             )
             if(tabs[selectedTabIndex].title == "X") {
-                LazyPostsList(modifier = modifier.fillMaxSize(), socialsState = socialsState)
+                LazyPostsList(
+                    modifier = modifier.fillMaxSize(),
+                    socialsState = socialsState,
+                    launchCustomTab = launchCustomTab
+                )
                 return
             }
             SocialsViewPager(
@@ -367,7 +371,8 @@ internal fun SocialsViewPager(
 @Composable
 internal fun LazyPostsList(
     modifier: Modifier = Modifier,
-    socialsState: SocialsState
+    socialsState: SocialsState,
+    launchCustomTab: (String) -> Unit = {},
 ) {
     val posts = when(socialsState) {
         is SocialsState.Success -> socialsState.data.tweets
@@ -378,7 +383,8 @@ internal fun LazyPostsList(
         items(posts.size) { index ->
             SocialsPost(
                 text = posts[index].text,
-                shouldShowImage = index == 0
+                shouldShowImage = index == 0,
+                launchCustomTab = launchCustomTab
             )
         }
     }

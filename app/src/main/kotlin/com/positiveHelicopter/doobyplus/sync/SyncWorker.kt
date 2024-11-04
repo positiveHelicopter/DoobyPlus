@@ -59,7 +59,8 @@ class SyncWorker @AssistedInject constructor(
                             id = tweet.key,
                             text = obj["text"] as String? ?: "",
                             url = "",
-                            date = obj["date"] as String? ?: ""
+                            date = obj["date"] as String? ?: "",
+                            timestamp = obj["timestamp"] as Long? ?: -1
                         )
                     } ?: emptyList()
                     socialsRepository.insertTweets(entries)

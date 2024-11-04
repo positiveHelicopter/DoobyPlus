@@ -22,28 +22,35 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
+import com.positiveHelicopter.doobyplus.utility.findHttpsUrl
 
 @Composable
 internal fun SocialsPost(
     modifier: Modifier = Modifier,
     text: String,
-    url: String = "",
-    shouldShowImage: Boolean = true
+    shouldShowImage: Boolean = true,
+    launchCustomTab: (String) -> Unit = {},
 ) {
     Row {
         if(shouldShowImage) {
             Image(
-                modifier = Modifier.padding(start = 10.dp).size(50.dp).clip(CircleShape),
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .size(50.dp)
+                    .clip(CircleShape),
                 painter = painterResource(R.drawable.dooby_face),
                 contentDescription = "Dooby"
             )
@@ -51,26 +58,53 @@ internal fun SocialsPost(
             Spacer(modifier.width(60.dp))
         }
         Surface(
-            modifier = Modifier.wrapContentHeight().fillMaxWidth()
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
                 .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
             color = colorResource(R.color.color_almost_black),
             shape = BubbleShape(shouldShowImage),
             border = BorderStroke(width = 1.dp, color = colorResource(R.color.black))
         ) {
             Column(
-                modifier = modifier.fillMaxSize().wrapContentHeight(),
+                modifier = modifier
+                    .fillMaxSize()
+                    .wrapContentHeight(),
             ) {
                 Text(
-                    text = text,
+                    text = buildAnnotatedString {
+                        val httpsParts = text.findHttpsUrl()
+                        if (httpsParts.isEmpty()) {
+                            append(text)
+                            return@buildAnnotatedString
+                        }
+                        append(text.substring(0, httpsParts[0].startIndex))
+                        httpsParts.forEachIndexed { index, part ->
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = part.url,
+                                    styles = TextLinkStyles(
+                                        style = SpanStyle(
+                                            color = colorResource(R.color.color_light_blue
+                                            )
+                                        )
+                                    )
+                                ) {
+                                    launchCustomTab(part.url)
+                                }
+                            ) {
+                                append(part.url)
+                            }
+                            append(text.substring(
+                                part.endIndex,
+                                if (index + 1 < httpsParts.size)
+                                    httpsParts[index + 1].startIndex
+                                else text.length))
+                        }
+                    },
                     modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
                     color = colorResource(R.color.color_white_faded),
                     fontSize = 16.sp
-                )
-                AsyncImage(
-                    model = url,
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
                 )
             }
         }

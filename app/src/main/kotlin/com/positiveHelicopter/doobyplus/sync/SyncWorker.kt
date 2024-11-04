@@ -9,20 +9,13 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.google.firebase.messaging.FirebaseMessaging
-import com.positiveHelicopter.doobyplus.model.database.TweetEntity
 import com.positiveHelicopter.doobyplus.repo.socials.SocialsRepository
 import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
 import com.positiveHelicopter.doobyplus.utility.di.DispatcherType.IO
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -35,52 +28,7 @@ class SyncWorker @AssistedInject constructor(
     @Inject lateinit var socialsRepository: SocialsRepository
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         getCurrentFirebaseToken()
-        val result = awaitAll(
-            async { getFireStoreData() }
-        ).all { it }
-        if(result) Result.success() else Result.failure()
-    }
-
-    private fun getFireStoreData(): Boolean {
-        val timeout = 10_000
-        var isSuccess = true
-        var isFetching = true
-        val startTime = System.currentTimeMillis()
-        val db = Firebase.firestore("doobyplus")
-        val collection = db.collection("dooby")
-        val tweets = collection.document("tweets")
-        tweets.get()
-            .addOnSuccessListener {
-                Log.i("SyncWorker", "Tweets: $it")
-                CoroutineScope(ioDispatcher).launch {
-                    val entries = it.data?.map { tweet ->
-                        val obj = tweet.value as Map<*, *>
-                        TweetEntity(
-                            id = tweet.key,
-                            text = obj["text"] as String? ?: "",
-                            url = "",
-                            date = obj["date"] as String? ?: "",
-                            timestamp = obj["timestamp"] as Long? ?: -1,
-                            link = obj["link"] as String? ?: ""
-                        )
-                    } ?: emptyList()
-                    socialsRepository.insertTweets(entries)
-                }
-                isFetching = false
-            }
-            .addOnFailureListener {
-                Log.e("SyncWorker", "Error getting tweets", it)
-                isSuccess = false
-                isFetching = false
-            }
-        while(isFetching) {
-            if (System.currentTimeMillis() - startTime > timeout) {
-                isFetching = false
-                isSuccess = false
-                Log.e("SyncWorker", "Timeout")
-            }
-        }
-        return isSuccess
+        Result.success()
     }
 
     private fun getCurrentFirebaseToken() {

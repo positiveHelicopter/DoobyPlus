@@ -22,6 +22,8 @@ import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsClient
+import com.positiveHelicopter.doobyplus.network.FireStoreUpdateManager
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")
@@ -29,6 +31,7 @@ class DoobActivity: ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { _: Boolean -> }
+    @Inject lateinit var fireStoreUpdateManager: FireStoreUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,12 @@ class DoobActivity: ComponentActivity() {
                 askNotificationPermission = ::askNotificationPermission
             )
         }
+        fireStoreUpdateManager.listenForUpdates()
+    }
+
+    override fun onDestroy() {
+        fireStoreUpdateManager.unregisterListeners()
+        super.onDestroy()
     }
 
     private fun setOrientation(orientation: Int) {

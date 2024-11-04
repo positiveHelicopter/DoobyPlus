@@ -9,7 +9,6 @@ data class TweetEntity(
     @PrimaryKey
     val id: String,
     val text: String,
-    val url: String,
     val date: String,
     val timestamp: Long,
     val link: String

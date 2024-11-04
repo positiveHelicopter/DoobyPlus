@@ -34,10 +34,9 @@ class FireStoreUpdateManager @Inject constructor(
                 TweetEntity(
                     id = tweet.key,
                     text = obj["text"] as String? ?: "",
-                    url = "",
-                    date = obj["date"] as String? ?: "",
+                    date = (obj["date"] as String?)?.trim() ?: "",
                     timestamp = obj["timestamp"] as Long? ?: -1,
-                    link = obj["link"] as String? ?: ""
+                    link = (obj["link"] as String?)?.trim() ?: ""
                 )
             } ?: emptyList()
             socialsRepository.insertTweets(entries)

@@ -66,7 +66,7 @@ import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
 import com.positiveHelicopter.doobyplus.ui.SocialsPost
 import com.positiveHelicopter.doobyplus.utility.convertDurationToHHmm
-import com.positiveHelicopter.doobyplus.utility.convertIsoToDDMMYYYYHHmm
+import com.positiveHelicopter.doobyplus.utility.convertIsoToDDMMMYYYYHHmm
 import kotlinx.coroutines.launch
 
 @Composable
@@ -355,7 +355,7 @@ internal fun SocialsViewPager(
                         onClick = { launchCustomTab(it.url) }
                     ),
                     title = it.title,
-                    date = it.date.convertIsoToDDMMYYYYHHmm(),
+                    date = it.date.convertIsoToDDMMMYYYYHHmm(),
                     thumbnailUrl = it.thumbnailUrl,
                     duration = it.duration.convertDurationToHHmm()
                 )

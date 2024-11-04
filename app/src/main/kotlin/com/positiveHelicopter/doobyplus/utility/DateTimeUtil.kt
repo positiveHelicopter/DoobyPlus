@@ -3,10 +3,10 @@ package com.positiveHelicopter.doobyplus.utility
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun String.convertIsoToDDMMYYYYHHmm(): String {
+fun String.convertIsoToDDMMMYYYYHHmm(): String {
     try {
         val isoFormatter= DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+        val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm")
         val date = LocalDateTime.parse(this, isoFormatter)
         return date.format(formatter)
     } catch (e: Exception) {

@@ -38,4 +38,8 @@ class DoobSocialsRepository @Inject constructor(
 
     override fun getTweets(): Flow<List<PostMessage>> =
         tweetDao.getTweets().map { it.map(TweetEntity::asExternalModel) }
+
+    override suspend fun insertTweets(tweets: List<TweetEntity>) {
+        tweetDao.insertTweets(tweets)
+    }
 }

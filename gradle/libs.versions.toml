@@ -73,6 +73,7 @@ coil-kt-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "co
 custom-tab-browser = { group = "androidx.browser", name = "browser", version.ref = "custom-tab-browser" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 proto-preference-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "proto-preference-datastore" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
@@ -96,7 +97,6 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 
 # Plugins defined by this project
 doobyplus-android-application = { id = "doobyplus.android.application", version = "unspecified" }

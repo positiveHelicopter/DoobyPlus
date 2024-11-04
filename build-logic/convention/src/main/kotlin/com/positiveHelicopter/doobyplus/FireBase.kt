@@ -12,6 +12,7 @@ internal fun Project.configureFirebase(
             val bom = libs.findLibrary("firebase-bom").get()
             add("implementation", platform(bom))
             add("implementation", libs.findLibrary("firebase-cloud-messaging").get())
+            add("implementation", libs.findLibrary("firebase-firestore").get())
         }
     }
 }

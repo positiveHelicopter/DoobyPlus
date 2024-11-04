@@ -20,6 +20,8 @@ import com.positiveHelicopter.doobyplus.screens.DoobApp
 import dagger.hilt.android.AndroidEntryPoint
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsClient
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")
@@ -73,8 +75,15 @@ class DoobActivity: ComponentActivity() {
         onError: (String, String) -> Unit
     ) {
         try {
-            val intent = CustomTabsIntent.Builder().build()
-            intent.intent.`package` = "com.android.chrome"
+            val intent = CustomTabsIntent.Builder()
+                .setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK)
+                .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK,
+                    CustomTabColorSchemeParams.Builder().build())
+                .build()
+            val packageName = CustomTabsClient.getPackageName(this, null)
+            if (packageName != null) {
+                intent.intent.`package` = packageName
+            }
             intent.launchUrl(this, Uri.parse(url))
         } catch (e: Exception) {
             onError(

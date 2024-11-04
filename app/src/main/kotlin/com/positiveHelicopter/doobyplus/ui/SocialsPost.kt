@@ -2,6 +2,8 @@ package com.positiveHelicopter.doobyplus.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -90,8 +92,7 @@ internal fun SocialsPost(
                                     url = part.url,
                                     styles = TextLinkStyles(
                                         style = SpanStyle(
-                                            color = colorResource(R.color.color_light_blue
-                                            )
+                                            color = colorResource(R.color.color_light_blue)
                                         )
                                     )
                                 ) {
@@ -107,7 +108,8 @@ internal fun SocialsPost(
                                 else text.length))
                         }
                     },
-                    modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
+                    modifier = Modifier.padding(
+                        start = 30.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
                     color = colorResource(R.color.color_white_faded),
                     fontSize = 16.sp
                 )
@@ -121,6 +123,31 @@ internal fun SocialsPost(
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End
                 )
+                Box(modifier = Modifier.fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(colorResource(R.color.color_black_faded))) {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = 30.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
+                        text = buildAnnotatedString {
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = link,
+                                    styles = TextLinkStyles(
+                                        style = SpanStyle(
+                                            color = colorResource(R.color.color_white_faded)
+                                        )
+                                    )
+                                ) {
+                                    launchCustomTab(link)
+                                }
+                            ) {
+                                append(link)
+                            }
+                        },
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
@@ -132,7 +159,7 @@ internal fun SocialsPostPreview() {
     SocialsPost(
         text = "This is a post This is a post This is a post This is a post This is a post This is a post",
         date = " November 03, 2024 at 01:03PM",
-        link = ""
+        link = "https://x.com/dooby3D/status/1853188180381716578"
     )
 }
 

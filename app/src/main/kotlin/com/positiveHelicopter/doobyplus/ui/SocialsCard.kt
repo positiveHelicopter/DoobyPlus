@@ -13,10 +13,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,7 @@ internal fun SocialsCard(
     thumbnailUrl: String = "",
     duration: String = "",
 ) {
+    var contentScale by remember { mutableStateOf(ContentScale.Fit) }
     OutlinedCard(
         modifier = Modifier.wrapContentHeight().fillMaxWidth()
             .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
@@ -47,7 +53,10 @@ internal fun SocialsCard(
                     model = thumbnailUrl,
                     contentDescription = title,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
+                    contentScale = contentScale,
+                    onSuccess = { contentScale = ContentScale.FillBounds },
+                    placeholder = painterResource(R.drawable.jerboa_erm),
+                    error = painterResource(R.drawable.jerboa_erm)
                 )
                 Text(
                     modifier = Modifier

@@ -20,7 +20,6 @@ import com.positiveHelicopter.doobyplus.screens.DoobApp
 import dagger.hilt.android.AndroidEntryPoint
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
-import com.google.firebase.messaging.FirebaseMessaging
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")

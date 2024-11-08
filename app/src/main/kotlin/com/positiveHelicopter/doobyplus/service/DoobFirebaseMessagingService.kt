@@ -32,9 +32,9 @@ class DoobFirebaseMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        val title = message.data["title"] ?: return
-        val text = message.data["body"] ?: return
-        val type = message.data["type"] ?: ""
+        val title = message.notification?.title ?: return
+        val text = message.notification?.body ?: return
+        val type = message.notification?.tag ?: ""
 
         val twitch = "twitch"
         val youtube = "youtube"

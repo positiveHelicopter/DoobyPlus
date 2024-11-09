@@ -72,7 +72,8 @@ internal fun SocialsCard(
                 )
             }
             Text(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 10.dp),
                 text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -82,7 +83,7 @@ internal fun SocialsCard(
             )
             Text(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(bottom = 20.dp, start = 10.dp, end = 10.dp),
+                    .padding(top = 5.dp, bottom = 10.dp, start = 15.dp, end = 15.dp),
                 text = date,
                 color = colorResource(R.color.color_grey_faded),
                 fontSize = 14.sp,

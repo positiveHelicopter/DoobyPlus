@@ -1,6 +1,8 @@
 package com.positiveHelicopter.doobyplus.utility
 
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 
@@ -33,8 +35,10 @@ fun String.convertTweetDateToDDMMMYYYYHHmm(): String {
             .parseCaseInsensitive()
             .appendPattern("MMMM dd, yyyy 'at' hh:mma")
             .toFormatter()
-        val date = LocalDateTime.parse(this.trim(), formatter)
-        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"))
+            .withZone(ZoneId.of("+08:00"))
+        val date = ZonedDateTime.parse(this.trim(), formatter)
+        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm")
+            .withZone(ZoneId.systemDefault()))
     } catch (e: Exception) {
         e.printStackTrace()
         return this

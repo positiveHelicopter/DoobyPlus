@@ -61,6 +61,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
+import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
 import com.positiveHelicopter.doobyplus.ui.SocialsPost
@@ -136,7 +137,7 @@ internal fun SocialsScreen(
                 icon = R.drawable.twitch_logo,
                 monoIcon = R.drawable.twitch_logo_mono,
                 color = R.color.twitch_color,
-                subTabs = listOf("Videos", "Clips"),
+                subTabs = listOf("Videos", "Top Clips", "Weekly Clips"),
             ),
             SocialsTab(
                 title = "X",
@@ -200,6 +201,7 @@ internal fun SocialsScreen(
                 modifier = modifier.fillMaxSize(),
                 socialsState = socialsState,
                 pagerState = pagerState,
+                socialsTab = tabs[selectedTabIndex],
                 launchCustomTab = launchCustomTab
             )
         }
@@ -333,8 +335,21 @@ internal fun SocialsViewPager(
     modifier: Modifier = Modifier,
     socialsState: SocialsState,
     pagerState: PagerState,
+    socialsTab: SocialsTab,
     launchCustomTab: (String) -> Unit = {},
 ) {
+    val title = socialsTab.title
+    val dataList: List<List<TwitchVideo>> = when(title) {
+        "Twitch" -> {
+            val videos = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.twitchVODs
+                else -> listOf()
+            }
+            listOf(videos, listOf(), listOf())
+        }
+        "Youtube" -> listOf(listOf(), listOf(), listOf())
+        else -> null
+    } ?: return
     HorizontalPager(
         state = pagerState,
         pageSize = PageSize.Fill,
@@ -347,11 +362,7 @@ internal fun SocialsViewPager(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(top = 20.dp)
         ) {
-            val videos = when(socialsState) {
-                is SocialsState.Success -> socialsState.data.twitchVODs
-                else -> listOf()
-            }
-            items(videos) {
+            items(dataList[page]) {
                 SocialsCard(
                     modifier = modifier.clickable(
                         onClick = { launchCustomTab(it.url) }

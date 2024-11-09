@@ -10,7 +10,13 @@ import com.positiveHelicopter.doobyplus.screens.socials.SocialsScreen
 internal const val SOCIALS_ROUTE = "socials"
 
 internal fun NavController.navigateToSocials() {
-    navigate(SOCIALS_ROUTE) { popBackStack() }
+    navigate(SOCIALS_ROUTE) {
+        popUpTo(SOCIALS_ROUTE) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
 }
 
 internal fun NavGraphBuilder.socialsScreen(

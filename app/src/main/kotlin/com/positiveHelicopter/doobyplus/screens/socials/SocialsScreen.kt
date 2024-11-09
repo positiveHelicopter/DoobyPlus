@@ -41,6 +41,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,7 +88,7 @@ internal fun SocialsScreen(
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     val socialsState by viewModel.uiState.collectAsStateWithLifecycle()
     SocialsScreen(
         socialsState = socialsState,

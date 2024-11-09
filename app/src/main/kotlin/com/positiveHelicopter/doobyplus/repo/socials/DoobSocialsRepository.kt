@@ -1,10 +1,12 @@
 package com.positiveHelicopter.doobyplus.repo.socials
 
 import com.positiveHelicopter.doobyplus.database.dao.TweetDao
+import com.positiveHelicopter.doobyplus.database.dao.TwitchDao
 import com.positiveHelicopter.doobyplus.datastore.PreferenceDataSource
 import com.positiveHelicopter.doobyplus.model.PostMessage
 import com.positiveHelicopter.doobyplus.model.SocialsData
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
+import com.positiveHelicopter.doobyplus.model.database.TwitchEntity
 import com.positiveHelicopter.doobyplus.model.database.asExternalModel
 import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
 import javax.inject.Inject
@@ -18,7 +20,8 @@ import kotlinx.coroutines.withContext
 class DoobSocialsRepository @Inject constructor(
     @Dispatcher(IO) private val dispatcher: CoroutineDispatcher,
     private val userPreferenceDataSource: PreferenceDataSource,
-    private val tweetDao: TweetDao
+    private val tweetDao: TweetDao,
+    private val twitchDao: TwitchDao
 ): SocialsRepository {
     override val data: Flow<SocialsData> = combine(
         userPreferenceDataSource.userData,
@@ -41,5 +44,9 @@ class DoobSocialsRepository @Inject constructor(
 
     override suspend fun insertTweets(tweets: List<TweetEntity>) {
         tweetDao.insertTweets(tweets)
+    }
+
+    override suspend fun insertVideos(videos: List<TwitchEntity>) {
+        twitchDao.insertVideos(videos)
     }
 }

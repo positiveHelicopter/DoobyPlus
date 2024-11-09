@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
+import com.positiveHelicopter.doobyplus.model.database.TwitchEntity
 import com.positiveHelicopter.doobyplus.repo.socials.SocialsRepository
 import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
 import com.positiveHelicopter.doobyplus.utility.di.DispatcherType.IO
@@ -21,6 +22,7 @@ class FireStoreUpdateManager @Inject constructor(
     private val registrations = mutableListOf<ListenerRegistration>()
     fun listenForUpdates() {
         listenForTweets()
+        listenForTwitch()
     }
 
     fun unregisterListeners() {
@@ -43,6 +45,30 @@ class FireStoreUpdateManager @Inject constructor(
         }
     }
 
+    private fun listenForTwitch() {
+        listenForUpdate("twitch") { snapshot ->
+            val videos = mutableListOf<TwitchEntity>()
+            snapshot.data?.forEach { (type, value) ->
+                val obj = value as ArrayList<*>
+                obj.forEach {
+                    val video = it as Map<*, *>
+                    videos.add(
+                        TwitchEntity(
+                            id = video["id"] as String? ?: "",
+                            title = video["title"] as String? ?: "",
+                            date = video["created_at "] as String? ?: "",
+                            url = video["url"] as String? ?: "",
+                            thumbnailUrl = video["thumbnail_url"] as String? ?: "",
+                            duration = video["duration"] as String? ?: "",
+                            type = type
+                        )
+                    )
+                }
+            }
+            socialsRepository.insertVideos(videos)
+        }
+    }
+
     private fun listenForUpdate(
         docName: String,
         operation: suspend (DocumentSnapshot) -> Unit
@@ -52,16 +78,16 @@ class FireStoreUpdateManager @Inject constructor(
         val tweets = collection.document(docName)
         val registration = tweets.addSnapshotListener { snapshot, exception ->
             if (exception != null) {
-                Log.e("TweetFireStoreListener", "Listen failed", exception)
+                Log.e("FireStoreListener", "Listen failed", exception)
                 return@addSnapshotListener
             }
             if (snapshot != null && snapshot.exists()) {
-                Log.d("TweetFireStoreListener", "Current data: ${snapshot.data}")
+                Log.d("FireStoreListener", "Current data: ${snapshot.data}")
                 CoroutineScope(coroutineDispatcher).launch {
                     operation(snapshot)
                 }
             } else {
-                Log.d("TweetFireStoreListener", "Current data: null")
+                Log.d("FireStoreListener", "Current data: null")
             }
         }
         registrations.add(registration)

@@ -137,7 +137,7 @@ internal fun SocialsScreen(
                 icon = R.drawable.twitch_logo,
                 monoIcon = R.drawable.twitch_logo_mono,
                 color = R.color.twitch_color,
-                subTabs = listOf("Videos", "Top Clips", "Weekly Clips"),
+                subTabs = listOf("Videos", "Top Clips"),
             ),
             SocialsTab(
                 title = "X",
@@ -345,7 +345,7 @@ internal fun SocialsViewPager(
                 is SocialsState.Success -> socialsState.data.twitchVODs
                 else -> listOf()
             }
-            listOf(videos, listOf(), listOf())
+            listOf(videos, listOf())
         }
         "Youtube" -> listOf(listOf(), listOf(), listOf())
         else -> null

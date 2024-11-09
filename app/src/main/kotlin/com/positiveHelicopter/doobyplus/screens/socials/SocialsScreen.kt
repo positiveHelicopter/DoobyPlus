@@ -365,8 +365,10 @@ internal fun SocialsViewPager(
         verticalAlignment = Alignment.Top
     ) { page ->
         Column {
+            var topPadding = 20.dp
             val itemList = if (socialsTab.subTabs[page].equals("Top Clips", ignoreCase = true)) {
                 var type by remember { mutableStateOf("clips") }
+                topPadding = 10.dp
                 Row {
                     SocialsChip(
                         modifier = Modifier.padding(start = 15.dp),
@@ -386,7 +388,7 @@ internal fun SocialsViewPager(
             LazyVerticalGrid(
                 modifier = modifier,
                 columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(top = 20.dp)
+                contentPadding = PaddingValues(top = topPadding)
             ) {
                 items(itemList) {
                     SocialsCard(

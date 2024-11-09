@@ -52,20 +52,23 @@ class FireStoreUpdateManager @Inject constructor(
                 val obj = value as ArrayList<*>
                 obj.forEach {
                     val video = it as Map<*, *>
+                    val thumbnailUrl = (video["thumbnail_url"] as String? ?: "")
+                        .replace("%{width}", "320")
+                        .replace("%{height}", "180")
                     videos.add(
                         TwitchEntity(
                             id = video["id"] as String? ?: "",
                             title = video["title"] as String? ?: "",
-                            date = video["created_at "] as String? ?: "",
+                            date = video["created_at"] as String? ?: "",
                             url = video["url"] as String? ?: "",
-                            thumbnailUrl = video["thumbnail_url"] as String? ?: "",
+                            thumbnailUrl = thumbnailUrl,
                             duration = video["duration"] as String? ?: "",
                             type = type
                         )
                     )
                 }
             }
-            socialsRepository.insertVideos(videos)
+            socialsRepository.insertTwitchVideos(videos)
         }
     }
 

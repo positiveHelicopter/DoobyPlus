@@ -5,6 +5,7 @@ import com.positiveHelicopter.doobyplus.database.dao.TwitchDao
 import com.positiveHelicopter.doobyplus.datastore.PreferenceDataSource
 import com.positiveHelicopter.doobyplus.model.PostMessage
 import com.positiveHelicopter.doobyplus.model.SocialsData
+import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
 import com.positiveHelicopter.doobyplus.model.database.TwitchEntity
 import com.positiveHelicopter.doobyplus.model.database.asExternalModel
@@ -25,11 +26,13 @@ class DoobSocialsRepository @Inject constructor(
 ): SocialsRepository {
     override val data: Flow<SocialsData> = combine(
         userPreferenceDataSource.userData,
-        getTweets()
-    ) { userData, tweets ->
+        getTweets(),
+        getTwitchVODs(),
+    ) { userData, tweets, twitchVODs ->
         SocialsData(
             userPreference = userData,
-            tweets = tweets.sortedByDescending { it.timestamp }
+            tweets = tweets.sortedByDescending { it.timestamp },
+            twitchVODs = twitchVODs
         )
     }
 
@@ -46,7 +49,10 @@ class DoobSocialsRepository @Inject constructor(
         tweetDao.insertTweets(tweets)
     }
 
-    override suspend fun insertVideos(videos: List<TwitchEntity>) {
+    override fun getTwitchVODs(): Flow<List<TwitchVideo>> =
+        twitchDao.getTwitchVODs().map { it.map(TwitchEntity::asExternalModel) }
+
+    override suspend fun insertTwitchVideos(videos: List<TwitchEntity>) {
         twitchDao.insertVideos(videos)
     }
 }

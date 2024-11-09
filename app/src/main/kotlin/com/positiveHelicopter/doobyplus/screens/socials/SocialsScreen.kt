@@ -61,7 +61,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
-import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
 import com.positiveHelicopter.doobyplus.ui.SocialsPost
@@ -199,6 +198,7 @@ internal fun SocialsScreen(
             }
             SocialsViewPager(
                 modifier = modifier.fillMaxSize(),
+                socialsState = socialsState,
                 pagerState = pagerState,
                 launchCustomTab = launchCustomTab
             )
@@ -331,6 +331,7 @@ internal fun SocialsSecondaryTabRow(
 @Composable
 internal fun SocialsViewPager(
     modifier: Modifier = Modifier,
+    socialsState: SocialsState,
     pagerState: PagerState,
     launchCustomTab: (String) -> Unit = {},
 ) {
@@ -346,13 +347,10 @@ internal fun SocialsViewPager(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(top = 20.dp)
         ) {
-            val videos = listOf(
-                TwitchVideo(),
-                TwitchVideo(title = "dooby test \uD83C\uDF83 retro halloween flash games"),
-                TwitchVideo(),
-                TwitchVideo(),
-                TwitchVideo()
-            )
+            val videos = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.twitchVODs
+                else -> listOf()
+            }
             items(videos) {
                 SocialsCard(
                     modifier = modifier.clickable(

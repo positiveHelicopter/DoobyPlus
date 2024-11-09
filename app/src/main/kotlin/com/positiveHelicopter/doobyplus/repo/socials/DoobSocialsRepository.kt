@@ -61,4 +61,8 @@ class DoobSocialsRepository @Inject constructor(
     override suspend fun insertTwitchVideos(videos: List<TwitchEntity>) {
         twitchDao.insertVideos(videos)
     }
+
+    override suspend fun deleteOldTwitchVideos(videos: List<TwitchEntity>) {
+        twitchDao.deleteOldVideos(videos.map { it.id })
+    }
 }

@@ -68,6 +68,7 @@ class FireStoreUpdateManager @Inject constructor(
                     )
                 }
             }
+            socialsRepository.deleteOldTwitchVideos(videos)
             socialsRepository.insertTwitchVideos(videos)
         }
     }

@@ -15,4 +15,5 @@ interface SocialsRepository {
     fun getTwitchVODs(): Flow<List<TwitchVideo>>
     fun getTwitchTopClips(): Flow<List<TwitchVideo>>
     suspend fun insertTwitchVideos(videos: List<TwitchEntity>)
+    suspend fun deleteOldTwitchVideos(videos: List<TwitchEntity>)
 }

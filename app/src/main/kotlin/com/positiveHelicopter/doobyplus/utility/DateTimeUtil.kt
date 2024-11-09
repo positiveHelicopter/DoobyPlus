@@ -18,15 +18,22 @@ fun String.convertIsoToDDMMMYYYYHHmm(): String {
 }
 
 fun String.convertDurationToHHmm(): String {
-    var result = ""
-    for (i in this) {
-        result += when(i) {
-            in '0'..'9' -> i
-            's' -> break
-            else -> ':'
+    try {
+        var result = ""
+        val splits = this.split("h", "m", "s").filter {
+            it.isNotEmpty()
         }
+        splits.forEachIndexed { index, s ->
+            if (s.isEmpty()) return@forEachIndexed
+            result += if (s.length == 1 && index != 0) "0$s" else s
+            if (index < splits.size - 1) result += ":"
+        }
+        if (splits.size > 1) return result
+        result = "0:$result"
+        return result
+    } catch (e: Exception) {
+        return this
     }
-    return result
 }
 
 fun String.convertTweetDateToDDMMMYYYYHHmm(): String {

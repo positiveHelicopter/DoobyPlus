@@ -20,16 +20,17 @@ fun String.convertIsoToDDMMMYYYYHHmm(): String {
 fun String.convertDurationToHHmm(): String {
     try {
         var result = ""
-        val splits = this.split("h", "m", "s").filter {
+        val splits = this.split("h", "m", "s", ".").filter {
             it.isNotEmpty()
-        }
+        }.toMutableList()
+        if (this.contains(".")) splits.removeAt(splits.lastIndex)
         splits.forEachIndexed { index, s ->
             if (s.isEmpty()) return@forEachIndexed
             result += if (s.length == 1 && index != 0) "0$s" else s
             if (index < splits.size - 1) result += ":"
         }
         if (splits.size > 1) return result
-        result = "0:$result"
+        result = if (result.length != 1) "0:$result" else "0:0$result"
         return result
     } catch (e: Exception) {
         return this

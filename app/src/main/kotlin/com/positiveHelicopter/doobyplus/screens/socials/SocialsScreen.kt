@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +66,7 @@ import com.positiveHelicopter.doobyplus.model.SocialsTab
 import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
+import com.positiveHelicopter.doobyplus.ui.SocialsChip
 import com.positiveHelicopter.doobyplus.ui.SocialsPost
 import com.positiveHelicopter.doobyplus.utility.convertDurationToHHmm
 import com.positiveHelicopter.doobyplus.utility.convertIsoToDDMMMYYYYHHmm
@@ -345,7 +348,11 @@ internal fun SocialsViewPager(
                 is SocialsState.Success -> socialsState.data.twitchVODs
                 else -> listOf()
             }
-            listOf(videos, listOf())
+            val topClips = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.twitchTopClips
+                else -> listOf()
+            }
+            listOf(videos, topClips)
         }
         "Youtube" -> listOf(listOf(), listOf(), listOf())
         else -> null
@@ -357,21 +364,41 @@ internal fun SocialsViewPager(
             .background(colorResource(R.color.color_almost_black_faded)),
         verticalAlignment = Alignment.Top
     ) { page ->
-        LazyVerticalGrid(
-            modifier = modifier,
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(top = 20.dp)
-        ) {
-            items(dataList[page]) {
-                SocialsCard(
-                    modifier = modifier.clickable(
-                        onClick = { launchCustomTab(it.url) }
-                    ),
-                    title = it.title,
-                    date = it.date.convertIsoToDDMMMYYYYHHmm(),
-                    thumbnailUrl = it.thumbnailUrl,
-                    duration = it.duration.convertDurationToHHmm()
-                )
+        Column {
+            val itemList = if (socialsTab.subTabs[page].equals("Top Clips", ignoreCase = true)) {
+                var type by remember { mutableStateOf("clips") }
+                Row {
+                    SocialsChip(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "All",
+                        selected = type == "clips",
+                        onClick = { type = "clips" }
+                    )
+                    SocialsChip(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "7D",
+                        selected = type == "weekly",
+                        onClick = { type = "weekly" }
+                    )
+                }
+                dataList[page].filter { it.type == type }
+            } else dataList[page]
+            LazyVerticalGrid(
+                modifier = modifier,
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(top = 20.dp)
+            ) {
+                items(itemList) {
+                    SocialsCard(
+                        modifier = modifier.clickable(
+                            onClick = { launchCustomTab(it.url) }
+                        ),
+                        title = it.title,
+                        date = it.date.convertIsoToDDMMMYYYYHHmm(),
+                        thumbnailUrl = it.thumbnailUrl,
+                        duration = it.duration.convertDurationToHHmm()
+                    )
+                }
             }
         }
     }
@@ -407,7 +434,7 @@ internal fun SocialsScreenPreview() {
     SocialsScreen(
         socialsState = SocialsState.Loading,
         logoFontFamily = null,
-        selectedTabIndex = 0,
+        selectedTabIndex = 1,
         updateSelectedPrimaryTabIndex = {}
     )
 }

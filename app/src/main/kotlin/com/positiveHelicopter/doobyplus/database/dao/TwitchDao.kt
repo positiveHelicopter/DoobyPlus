@@ -12,6 +12,9 @@ interface TwitchDao {
     @Query("SELECT * FROM twitch WHERE type = 'vods'")
     fun getTwitchVODs(): Flow<List<TwitchEntity>>
 
+    @Query("SELECT * FROM twitch WHERE type = 'clips' OR type = 'weekly'")
+    fun getTwitchTopClips(): Flow<List<TwitchEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVideos(videos: List<TwitchEntity>)
 }

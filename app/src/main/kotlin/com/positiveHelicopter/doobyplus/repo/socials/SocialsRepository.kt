@@ -13,5 +13,6 @@ interface SocialsRepository {
     fun getTweets(): Flow<List<PostMessage>>
     suspend fun insertTweets(tweets: List<TweetEntity>)
     fun getTwitchVODs(): Flow<List<TwitchVideo>>
+    fun getTwitchTopClips(): Flow<List<TwitchVideo>>
     suspend fun insertTwitchVideos(videos: List<TwitchEntity>)
 }

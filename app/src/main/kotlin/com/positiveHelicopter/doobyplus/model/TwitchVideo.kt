@@ -5,5 +5,6 @@ data class TwitchVideo(
     val date: String,
     val url: String,
     val thumbnailUrl: String,
-    val duration: String
+    val duration: String,
+    val type: String
 )

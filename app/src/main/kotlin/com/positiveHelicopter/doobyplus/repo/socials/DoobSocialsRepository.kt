@@ -28,11 +28,14 @@ class DoobSocialsRepository @Inject constructor(
         userPreferenceDataSource.userData,
         getTweets(),
         getTwitchVODs(),
-    ) { userData, tweets, twitchVODs ->
+        getTwitchTopClips(),
+    ) { userData, tweets,
+        twitchVODs, twitchTopClips ->
         SocialsData(
             userPreference = userData,
             tweets = tweets.sortedByDescending { it.timestamp },
-            twitchVODs = twitchVODs
+            twitchVODs = twitchVODs,
+            twitchTopClips = twitchTopClips
         )
     }
 
@@ -51,6 +54,9 @@ class DoobSocialsRepository @Inject constructor(
 
     override fun getTwitchVODs(): Flow<List<TwitchVideo>> =
         twitchDao.getTwitchVODs().map { it.map(TwitchEntity::asExternalModel) }
+
+    override fun getTwitchTopClips(): Flow<List<TwitchVideo>> =
+        twitchDao.getTwitchTopClips().map { it.map(TwitchEntity::asExternalModel) }
 
     override suspend fun insertTwitchVideos(videos: List<TwitchEntity>) {
         twitchDao.insertVideos(videos)

@@ -35,10 +35,10 @@ class FireStoreUpdateManager @Inject constructor(
                 val obj = tweet.value as Map<*, *>
                 TweetEntity(
                     id = tweet.key,
-                    text = obj["text"] as String? ?: "",
-                    date = (obj["date"] as String?)?.trim() ?: "",
+                    text = obj["text"].toString(),
+                    date = obj["date"].toString().trim(),
                     timestamp = obj["timestamp"] as Long? ?: -1,
-                    link = (obj["link"] as String?)?.trim() ?: ""
+                    link = obj["link"].toString().trim()
                 )
             } ?: emptyList()
             socialsRepository.insertTweets(entries)
@@ -50,19 +50,20 @@ class FireStoreUpdateManager @Inject constructor(
             val videos = mutableListOf<TwitchEntity>()
             snapshot.data?.forEach { (type, value) ->
                 val obj = value as ArrayList<*>
+                println("type: $type, size: ${obj.size}")
                 obj.forEach {
                     val video = it as Map<*, *>
-                    val thumbnailUrl = (video["thumbnail_url"] as String? ?: "")
+                    val thumbnailUrl = video["thumbnail_url"].toString()
                         .replace("%{width}", "320")
                         .replace("%{height}", "180")
                     videos.add(
                         TwitchEntity(
-                            id = video["id"] as String? ?: "",
-                            title = video["title"] as String? ?: "",
-                            date = video["created_at"] as String? ?: "",
-                            url = video["url"] as String? ?: "",
+                            id = video["id"].toString(),
+                            title = video["title"].toString(),
+                            date = video["created_at"].toString(),
+                            url = video["url"].toString(),
                             thumbnailUrl = thumbnailUrl,
-                            duration = video["duration"] as String? ?: "",
+                            duration = video["duration"].toString(),
                             type = type
                         )
                     )

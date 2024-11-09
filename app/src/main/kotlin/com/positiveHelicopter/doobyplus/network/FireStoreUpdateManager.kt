@@ -50,7 +50,6 @@ class FireStoreUpdateManager @Inject constructor(
             val videos = mutableListOf<TwitchEntity>()
             snapshot.data?.forEach { (type, value) ->
                 val obj = value as ArrayList<*>
-                println("type: $type, size: ${obj.size}")
                 obj.forEach {
                     val video = it as Map<*, *>
                     val thumbnailUrl = video["thumbnail_url"].toString()

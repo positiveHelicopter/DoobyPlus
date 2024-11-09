@@ -2,6 +2,7 @@ package com.positiveHelicopter.doobyplus.screens.socials
 
 import android.content.pm.ActivityInfo
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -44,8 +45,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -366,27 +371,44 @@ internal fun SocialsViewPager(
     ) { page ->
         Column {
             var topPadding = 20.dp
+            var isVisible by remember { mutableStateOf(true) }
             val itemList = if (socialsTab.subTabs[page].equals("Top Clips", ignoreCase = true)) {
                 var type by remember { mutableStateOf("clips") }
                 topPadding = 10.dp
-                Row {
-                    SocialsChip(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = "All",
-                        selected = type == "clips",
-                        onClick = { type = "clips" }
-                    )
-                    SocialsChip(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = "7D",
-                        selected = type == "weekly",
-                        onClick = { type = "weekly" }
-                    )
+                AnimatedVisibility(isVisible) {
+                    Row {
+                        SocialsChip(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = "All",
+                            selected = type == "clips",
+                            onClick = { type = "clips" }
+                        )
+                        SocialsChip(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = "7D",
+                            selected = type == "weekly",
+                            onClick = { type = "weekly" }
+                        )
+                    }
                 }
                 dataList[page].filter { it.type == type }
             } else dataList[page]
             LazyVerticalGrid(
-                modifier = modifier,
+                modifier = modifier.nestedScroll(
+                    connection = remember {
+                        object: NestedScrollConnection {
+                            override fun onPreScroll(
+                                available: Offset,
+                                source: NestedScrollSource
+                            ): Offset {
+                                if (available.y > -2 && available.y < 2)
+                                    return super.onPreScroll(available, source)
+                                isVisible = available.y >= 0
+                                return super.onPreScroll(available, source)
+                            }
+                        }
+                    }
+                ),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(top = topPadding)
             ) {

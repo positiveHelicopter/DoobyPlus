@@ -104,7 +104,10 @@ internal fun DoobApp(
                 },
                 askNotificationPermission = askNotificationPermission
             )
-            settingsScreen(setOrientation)
+            settingsScreen(
+                innerPadding = innerPadding,
+                setOrientation = setOrientation
+            )
         }
     }
 }

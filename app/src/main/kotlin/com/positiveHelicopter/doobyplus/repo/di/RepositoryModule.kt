@@ -1,5 +1,7 @@
 package com.positiveHelicopter.doobyplus.repo.di
 
+import com.positiveHelicopter.doobyplus.repo.settings.DoobSettingsRepository
+import com.positiveHelicopter.doobyplus.repo.settings.SettingsRepository
 import com.positiveHelicopter.doobyplus.repo.socials.DoobSocialsRepository
 import com.positiveHelicopter.doobyplus.repo.socials.SocialsRepository
 import dagger.Binds
@@ -14,4 +16,9 @@ abstract class RepositoryModule {
     internal abstract fun bindsSocialsRepository(
         socialsRepository: DoobSocialsRepository,
     ): SocialsRepository
+
+    @Binds
+    internal abstract fun bindsSettingsRepository(
+        settingsRepository: DoobSettingsRepository,
+    ): SettingsRepository
 }

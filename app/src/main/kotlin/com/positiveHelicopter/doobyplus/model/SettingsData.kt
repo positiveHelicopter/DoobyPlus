@@ -1,7 +1,6 @@
 package com.positiveHelicopter.doobyplus.model
 
-data class UserPreference(
-    val isFirstTimeNotification: Boolean,
+data class SettingsData(
     val shouldRedirectUrl: Boolean,
     val shouldSendTwitchLive: Boolean,
     val shouldSendNewTweet: Boolean

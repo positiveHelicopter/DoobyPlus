@@ -1,6 +1,7 @@
 package com.positiveHelicopter.doobyplus.screens.settings
 
 import android.content.pm.ActivityInfo
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -83,12 +83,13 @@ internal fun SettingsScreen(
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {}
 ) {
-    Box(modifier = modifier.fillMaxSize()
-        .paint(
-            painterResource(R.drawable.setting_background),
+    Box(modifier = modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.setting_background),
+            contentDescription = null,
+            modifier = modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-    ) {
         Column(modifier
             .fillMaxSize()
             .padding(innerPadding)

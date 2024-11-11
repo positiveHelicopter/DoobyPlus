@@ -1,5 +1,6 @@
 package com.positiveHelicopter.doobyplus.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -20,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -73,9 +73,14 @@ internal fun DoobApp(
                 showErrorDialog = false
             }
         }
+        Image(
+            painter = background,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillWidth
+        )
         NavHost(
-            modifier = modifier.fillMaxSize()
-                .paint(painter = background, contentScale = ContentScale.FillWidth),
+            modifier = modifier,
             navController = navController,
             startDestination = SOCIALS_ROUTE
         ) {

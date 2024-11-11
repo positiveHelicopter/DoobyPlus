@@ -18,6 +18,9 @@ interface TwitchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVideos(videos: List<TwitchEntity>)
 
+    @Query("DELETE FROM twitch WHERE type = 'weekly' AND id NOT IN (:ids)")
+    suspend fun deleteOldWeeklyVideos(ids: List<String>)
+
     @Query("DELETE FROM twitch WHERE id NOT IN (:ids)")
     suspend fun deleteOldVideos(ids: List<String>)
 }

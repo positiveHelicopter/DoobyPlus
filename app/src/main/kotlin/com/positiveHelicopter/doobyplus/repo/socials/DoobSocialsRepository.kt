@@ -64,5 +64,6 @@ class DoobSocialsRepository @Inject constructor(
 
     override suspend fun deleteOldTwitchVideos(videos: List<TwitchEntity>) {
         twitchDao.deleteOldVideos(videos.map { it.id })
+        twitchDao.deleteOldWeeklyVideos(videos.filter { it.type == "weekly" }.map { it.id })
     }
 }

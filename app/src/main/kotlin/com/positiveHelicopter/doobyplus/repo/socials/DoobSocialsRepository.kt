@@ -4,6 +4,7 @@ import com.positiveHelicopter.doobyplus.database.dao.TweetDao
 import com.positiveHelicopter.doobyplus.database.dao.TwitchDao
 import com.positiveHelicopter.doobyplus.datastore.PreferenceDataSource
 import com.positiveHelicopter.doobyplus.model.PostMessage
+import com.positiveHelicopter.doobyplus.model.PreviewImage
 import com.positiveHelicopter.doobyplus.model.SocialsData
 import com.positiveHelicopter.doobyplus.model.TwitchVideo
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
@@ -34,6 +35,10 @@ class DoobSocialsRepository @Inject constructor(
         twitchVODs, twitchTopClips ->
         SocialsData(
             userPreference = userData,
+            previewImage = PreviewImage(
+                shouldPreviewImage = false,
+                url = ""
+            ),
             tweets = tweets.sortedByDescending { it.timestamp },
             twitchVODs = twitchVODs,
             twitchTopClips = twitchTopClips

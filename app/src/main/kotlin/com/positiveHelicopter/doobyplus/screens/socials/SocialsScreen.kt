@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -56,7 +54,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -110,7 +107,8 @@ internal fun SocialsScreen(
         askNotificationPermission = askNotificationPermission,
         setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification,
         updatePreviewLink = viewModel::updateTweetPreview,
-        toggleBottomBarHidden = toggleBottomBarHidden
+        toggleBottomBarHidden = toggleBottomBarHidden,
+        setPreviewImage = viewModel::setPreviewImage
     )
 }
 
@@ -126,7 +124,8 @@ internal fun SocialsScreen(
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
     setIsFirstTimeNotification: (Boolean) -> Unit = {},
     updatePreviewLink: (String, String) -> Unit = { _, _ -> },
-    toggleBottomBarHidden: (Boolean) -> Unit = {}
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
+    setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     when(socialsState) {
@@ -140,6 +139,30 @@ internal fun SocialsScreen(
                     setIsFirstTimeNotification(false)
                     requestPermission()
                 }
+            }
+            if (socialsState.data.previewImage.shouldPreviewImage) {
+                toggleBottomBarHidden(true)
+                BackHandler { setPreviewImage(false, "") }
+                Box(modifier = modifier
+                    .fillMaxSize()
+                    .zIndex(1f)
+                    .clickable(
+                        interactionSource = null,
+                        indication = null,
+                        onClick = {}
+                    )
+                    .background(colorResource(R.color.color_black_faded))
+                ) {
+                    AsyncImage(
+                        model = socialsState.data.previewImage.url,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit,
+                        error = painterResource(R.drawable.jerboa_erm)
+                    )
+                }
+            } else {
+                toggleBottomBarHidden(false)
             }
         }
     }
@@ -214,7 +237,8 @@ internal fun SocialsScreen(
                     modifier = modifier.fillMaxSize(),
                     socialsState = socialsState,
                     launchCustomTab = launchCustomTab,
-                    updatePreviewLink = updatePreviewLink
+                    updatePreviewLink = updatePreviewLink,
+                    setPreviewImage = setPreviewImage
                 )
                 return
             }
@@ -225,29 +249,6 @@ internal fun SocialsScreen(
                 socialsTab = tabs[selectedTabIndex],
                 launchCustomTab = launchCustomTab
             )
-        }
-
-        var shouldPreviewImage by remember { mutableStateOf(false) }
-        if(shouldPreviewImage) {
-            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-            toggleBottomBarHidden(true)
-            BackHandler { shouldPreviewImage = false}
-            Box(modifier = modifier
-                .fillMaxWidth()
-                .height(screenHeight)
-                .clickable {}
-                .background(colorResource(R.color.color_almost_black))) {
-                AsyncImage(
-                    model = "https://pbs.twimg.com/media/Gb_k8P6XQAAibBH.jpg:large",
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                    placeholder = painterResource(R.drawable.jerboa_erm),
-                    error = painterResource(R.drawable.jerboa_erm)
-                )
-            }
-        } else {
-            toggleBottomBarHidden(false)
         }
     }
 }
@@ -473,7 +474,8 @@ internal fun LazyPostsList(
     modifier: Modifier = Modifier,
     socialsState: SocialsState,
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     val posts = when(socialsState) {
         is SocialsState.Success -> socialsState.data.tweets
@@ -494,7 +496,8 @@ internal fun LazyPostsList(
                 previewLink = posts[index].previewLink,
                 shouldShowImage = index == 0,
                 launchCustomTab = { launchCustomTab(it, shouldRedirectUrl) },
-                updatePreviewLink = updatePreviewLink
+                updatePreviewLink = updatePreviewLink,
+                setPreviewImage = setPreviewImage
             )
         }
     }

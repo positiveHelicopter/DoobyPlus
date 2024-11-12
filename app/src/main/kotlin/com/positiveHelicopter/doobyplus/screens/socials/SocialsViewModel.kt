@@ -1,24 +1,48 @@
 package com.positiveHelicopter.doobyplus.screens.socials
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.positiveHelicopter.doobyplus.model.PreviewImage
 import com.positiveHelicopter.doobyplus.model.SocialsData
 import com.positiveHelicopter.doobyplus.repo.socials.SocialsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SocialsViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val socialsRepository: SocialsRepository
 ): ViewModel() {
-    val uiState: StateFlow<SocialsState> = socialsRepository.data.map {
-        SocialsState.Success(it)
-    }.stateIn(
+    private val shouldPreviewImageKey = "shouldPreviewImageKey"
+    private val previewImageUrlKey = "previewImageUrlKey"
+    private val shouldPreviewImage = savedStateHandle.getStateFlow(
+        key = shouldPreviewImageKey,
+        initialValue = false
+    )
+    private val previewImageUrl = savedStateHandle.getStateFlow(
+        key = previewImageUrlKey,
+        initialValue = ""
+    )
+
+    val uiState: StateFlow<SocialsState> = combine(
+        socialsRepository.data,
+        shouldPreviewImage,
+        previewImageUrl,
+        transform = { data, shouldPreview, imageUrl ->
+            SocialsState.Success(data.copy(
+                previewImage = PreviewImage(
+                    shouldPreviewImage = shouldPreview,
+                    url = imageUrl
+                )
+            ))
+        }
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = SocialsState.Loading
@@ -34,6 +58,14 @@ class SocialsViewModel @Inject constructor(
         viewModelScope.launch {
             socialsRepository.updateTweetPreview(id, url)
         }
+    }
+
+    fun setPreviewImage(
+        shouldPreview: Boolean,
+        url: String
+    ) {
+        savedStateHandle[shouldPreviewImageKey] = shouldPreview
+        savedStateHandle[previewImageUrlKey] = url
     }
 }
 

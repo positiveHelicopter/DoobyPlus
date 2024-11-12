@@ -3,6 +3,7 @@ package com.positiveHelicopter.doobyplus.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,7 +55,8 @@ internal fun SocialsPost(
     previewLink: String,
     shouldShowImage: Boolean = true,
     launchCustomTab: (String) -> Unit = {},
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     if (previewLink.isEmpty()) updatePreviewLink(id, link)
     Row {
@@ -160,7 +162,8 @@ internal fun SocialsPost(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 100.dp, max = 300.dp)
-                            .padding(start = 12.dp),
+                            .padding(start = 12.dp)
+                            .clickable { setPreviewImage(true, previewLink) },
                         contentScale = ContentScale.Fit,
                         placeholder = painterResource(R.drawable.jerboa_erm),
                         error = painterResource(R.drawable.jerboa_erm)

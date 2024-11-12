@@ -60,6 +60,7 @@ class DoobSocialsRepository @Inject constructor(
 
     override suspend fun updateTweetPreview(
         id: String,
+        text: String,
         url: String
     ) = withContext(dispatcher) {
         try {
@@ -68,16 +69,31 @@ class DoobSocialsRepository @Inject constructor(
                 .timeout(3000)
                 .get()
             val image = doc.select("meta[property=og:image]")
+            val description = doc.select("meta[property=og:description]")
+            val descContent = if(description.isEmpty())
+                text else description[0].attr("content")
             if (image.isEmpty()) {
-                tweetDao.updateTweetPreview(id, "null")
+                tweetDao.updateTweetPreview(
+                    id = id,
+                    text = descContent,
+                    previewLink = "null"
+                )
                 return@withContext
             }
             val content = image[0].attr("content")
             if (content.contains("profile_images", ignoreCase = true)) {
-                tweetDao.updateTweetPreview(id, "null")
+                tweetDao.updateTweetPreview(
+                    id = id,
+                    text = descContent,
+                    previewLink = "null"
+                )
                 return@withContext
             }
-            tweetDao.updateTweetPreview(id, content)
+            tweetDao.updateTweetPreview(
+                id = id,
+                text = descContent,
+                previewLink = content
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }

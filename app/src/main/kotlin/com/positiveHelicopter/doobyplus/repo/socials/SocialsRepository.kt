@@ -12,7 +12,7 @@ interface SocialsRepository {
     suspend fun setIsFirstTimeNotification(isFirstTime: Boolean)
     fun getTweets(): Flow<List<PostMessage>>
     suspend fun insertTweets(tweets: List<TweetEntity>)
-    suspend fun updateTweetPreview(id: String, url: String)
+    suspend fun updateTweetPreview(id: String, text: String, url: String)
     fun getTwitchVODs(): Flow<List<TwitchVideo>>
     fun getTwitchTopClips(): Flow<List<TwitchVideo>>
     suspend fun insertTwitchVideos(videos: List<TwitchEntity>)

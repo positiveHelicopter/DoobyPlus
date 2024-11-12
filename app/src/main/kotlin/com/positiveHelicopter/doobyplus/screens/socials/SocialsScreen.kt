@@ -121,7 +121,7 @@ internal fun SocialsScreen(
     updateSelectedPrimaryTabIndex: (Int) -> Unit,
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
     setIsFirstTimeNotification: (Boolean) -> Unit = {},
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    updatePreviewLink: (String, String, String) -> Unit = { _, _, _ -> },
     toggleBottomBarHidden: (Boolean) -> Unit = {},
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
@@ -457,7 +457,7 @@ internal fun LazyPostsList(
     modifier: Modifier = Modifier,
     socialsState: SocialsState,
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    updatePreviewLink: (String, String, String) -> Unit = { _, _, _ -> },
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     val posts = when(socialsState) {

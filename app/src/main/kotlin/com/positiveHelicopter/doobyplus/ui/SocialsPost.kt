@@ -55,10 +55,10 @@ internal fun SocialsPost(
     previewLink: String,
     shouldShowImage: Boolean = true,
     launchCustomTab: (String) -> Unit = {},
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    updatePreviewLink: (String, String, String) -> Unit = { _, _, _ -> },
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
-    if (previewLink.isEmpty()) updatePreviewLink(id, link)
+    if (previewLink.isEmpty()) updatePreviewLink(id, text, link)
     Row {
         if(shouldShowImage) {
             Image(

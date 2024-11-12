@@ -15,6 +15,6 @@ interface TweetDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTweets(tweets: List<TweetEntity>)
 
-    @Query("UPDATE tweets SET previewLink = :previewLink WHERE id = :id")
-    suspend fun updateTweetPreview(id: String, previewLink: String)
+    @Query("UPDATE tweets SET previewLink = :previewLink, text = :text WHERE id = :id")
+    suspend fun updateTweetPreview(id: String, text: String, previewLink: String)
 }

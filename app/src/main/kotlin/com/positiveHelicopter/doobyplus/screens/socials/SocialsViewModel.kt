@@ -54,9 +54,9 @@ class SocialsViewModel @Inject constructor(
         }
     }
 
-    fun updateTweetPreview(id: String, url: String) {
+    fun updateTweetPreview(id: String, text: String, url: String) {
         viewModelScope.launch {
-            socialsRepository.updateTweetPreview(id, url)
+            socialsRepository.updateTweetPreview(id, text, url)
         }
     }
 

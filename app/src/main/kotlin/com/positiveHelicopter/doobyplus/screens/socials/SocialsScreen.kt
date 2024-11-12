@@ -2,6 +2,7 @@ package com.positiveHelicopter.doobyplus.screens.socials
 
 import android.content.pm.ActivityInfo
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,6 +55,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -66,6 +71,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
@@ -85,7 +91,8 @@ internal fun SocialsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -102,7 +109,8 @@ internal fun SocialsScreen(
         },
         askNotificationPermission = askNotificationPermission,
         setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification,
-        updatePreviewLink = viewModel::updateTweetPreview
+        updatePreviewLink = viewModel::updateTweetPreview,
+        toggleBottomBarHidden = toggleBottomBarHidden
     )
 }
 
@@ -117,7 +125,8 @@ internal fun SocialsScreen(
     updateSelectedPrimaryTabIndex: (Int) -> Unit,
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
     setIsFirstTimeNotification: (Boolean) -> Unit = {},
-    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> },
+    toggleBottomBarHidden: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
     when(socialsState) {
@@ -216,6 +225,29 @@ internal fun SocialsScreen(
                 socialsTab = tabs[selectedTabIndex],
                 launchCustomTab = launchCustomTab
             )
+        }
+
+        var shouldPreviewImage by remember { mutableStateOf(false) }
+        if(shouldPreviewImage) {
+            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            toggleBottomBarHidden(true)
+            BackHandler { shouldPreviewImage = false}
+            Box(modifier = modifier
+                .fillMaxWidth()
+                .height(screenHeight)
+                .clickable {}
+                .background(colorResource(R.color.color_almost_black))) {
+                AsyncImage(
+                    model = "https://pbs.twimg.com/media/Gb_k8P6XQAAibBH.jpg:large",
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                    placeholder = painterResource(R.drawable.jerboa_erm),
+                    error = painterResource(R.drawable.jerboa_erm)
+                )
+            }
+        } else {
+            toggleBottomBarHidden(false)
         }
     }
 }

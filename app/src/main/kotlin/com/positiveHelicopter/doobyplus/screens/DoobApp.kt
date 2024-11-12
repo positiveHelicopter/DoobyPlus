@@ -93,7 +93,7 @@ internal fun DoobApp(
             watchScreen(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
-                toggleBottomBarHidden = { hideBottomBar = !hideBottomBar },
+                toggleBottomBarHidden = { hideBottomBar = it },
                 hideSystemBars = hideSystemBars,
                 openTwitch = {
                     openTwitch { title, text ->
@@ -113,7 +113,8 @@ internal fun DoobApp(
                         showErrorDialog = true
                     }
                 },
-                askNotificationPermission = askNotificationPermission
+                askNotificationPermission = askNotificationPermission,
+                toggleBottomBarHidden = { hideBottomBar = it }
             )
             settingsScreen(
                 innerPadding = innerPadding,

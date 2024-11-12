@@ -24,7 +24,8 @@ internal fun NavGraphBuilder.socialsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {}
 ) {
     composable(
         SOCIALS_ROUTE,
@@ -37,7 +38,8 @@ internal fun NavGraphBuilder.socialsScreen(
             innerPadding = innerPadding,
             setOrientation = setOrientation,
             launchCustomTab = launchCustomTab,
-            askNotificationPermission = askNotificationPermission
+            askNotificationPermission = askNotificationPermission,
+            toggleBottomBarHidden = toggleBottomBarHidden
         )
     }
 }

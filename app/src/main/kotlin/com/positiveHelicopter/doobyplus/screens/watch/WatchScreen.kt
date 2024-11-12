@@ -41,7 +41,7 @@ internal fun WatchScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     viewModel: WatchViewModel = hiltViewModel(),
     setOrientation: (Int) -> Unit = {},
-    toggleBottomBarHidden: () -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
     hideSystemBars: () -> Unit = {},
     openTwitch: () -> Unit = {}
 ) {
@@ -72,7 +72,7 @@ internal fun WatchScreen(
 internal fun TwitchPlayer(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    toggleBottomBarHidden: () -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
     setOrientation: (Int) -> Unit = {},
     enterFullScreen: (View?) -> Unit = {},
     exitFullScreen: () -> Unit = {},
@@ -114,7 +114,7 @@ internal fun TwitchPlayer(
 @Composable
 internal fun TwitchWebView(
     modifier: Modifier = Modifier,
-    toggleBottomBarHidden: () -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
     enterFullScreen: (View?) -> Unit = {},
     exitFullScreen: () -> Unit = {},
     openTwitch: () -> Unit = {},
@@ -143,12 +143,12 @@ internal fun TwitchWebView(
                 }
                 webChromeClient = object: WebChromeClient() {
                     override fun onHideCustomView() {
-                        toggleBottomBarHidden()
+                        toggleBottomBarHidden(false)
                         exitFullScreen()
                     }
 
                     override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
-                        toggleBottomBarHidden()
+                        toggleBottomBarHidden(true)
                         enterFullScreen(view)
                     }
                 }

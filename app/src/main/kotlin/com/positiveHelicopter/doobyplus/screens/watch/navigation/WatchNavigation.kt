@@ -23,7 +23,7 @@ internal fun NavController.navigateToWatch() {
 internal fun NavGraphBuilder.watchScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    toggleBottomBarHidden: () -> Unit = {},
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
     hideSystemBars: () -> Unit = {},
     openTwitch: () -> Unit = {}
 ) {

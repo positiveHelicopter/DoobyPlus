@@ -80,7 +80,7 @@ internal fun DoobApp(
             contentScale = ContentScale.FillWidth
         )
         NavHost(
-            modifier = modifier,
+            modifier = modifier.fillMaxSize(),
             navController = navController,
             startDestination = SOCIALS_ROUTE
         ) {

@@ -29,6 +29,12 @@ class SocialsViewModel @Inject constructor(
             socialsRepository.setIsFirstTimeNotification(isFirstTime)
         }
     }
+
+    fun updateTweetPreview(id: String, url: String) {
+        viewModelScope.launch {
+            socialsRepository.updateTweetPreview(id, url)
+        }
+    }
 }
 
 sealed interface SocialsState {

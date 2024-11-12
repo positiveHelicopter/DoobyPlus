@@ -11,12 +11,15 @@ data class TweetEntity(
     val text: String,
     val date: String,
     val timestamp: Long,
-    val link: String
+    val link: String,
+    val previewLink: String
 )
 
 fun TweetEntity.asExternalModel() = PostMessage(
+    id = id,
     text = text,
     date = date,
     timestamp = timestamp,
-    link = link
+    link = link,
+    previewLink = previewLink
 )

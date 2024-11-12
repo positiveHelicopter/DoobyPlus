@@ -101,7 +101,8 @@ internal fun SocialsScreen(
             selectedTabIndex = it
         },
         askNotificationPermission = askNotificationPermission,
-        setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification
+        setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification,
+        updatePreviewLink = viewModel::updateTweetPreview
     )
 }
 
@@ -115,7 +116,8 @@ internal fun SocialsScreen(
     selectedTabIndex: Int,
     updateSelectedPrimaryTabIndex: (Int) -> Unit,
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
-    setIsFirstTimeNotification: (Boolean) -> Unit = {}
+    setIsFirstTimeNotification: (Boolean) -> Unit = {},
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     when(socialsState) {
@@ -202,7 +204,8 @@ internal fun SocialsScreen(
                 LazyPostsList(
                     modifier = modifier.fillMaxSize(),
                     socialsState = socialsState,
-                    launchCustomTab = launchCustomTab
+                    launchCustomTab = launchCustomTab,
+                    updatePreviewLink = updatePreviewLink
                 )
                 return
             }
@@ -438,6 +441,7 @@ internal fun LazyPostsList(
     modifier: Modifier = Modifier,
     socialsState: SocialsState,
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
 ) {
     val posts = when(socialsState) {
         is SocialsState.Success -> socialsState.data.tweets
@@ -451,11 +455,14 @@ internal fun LazyPostsList(
         contentPadding = PaddingValues(top = 20.dp)) {
         items(posts.size) { index ->
             SocialsPost(
+                id = posts[index].id,
                 text = posts[index].text,
                 date = posts[index].date,
                 link = posts[index].link,
+                previewLink = posts[index].previewLink,
                 shouldShowImage = index == 0,
-                launchCustomTab = { launchCustomTab(it, shouldRedirectUrl) }
+                launchCustomTab = { launchCustomTab(it, shouldRedirectUrl) },
+                updatePreviewLink = updatePreviewLink
             )
         }
     }

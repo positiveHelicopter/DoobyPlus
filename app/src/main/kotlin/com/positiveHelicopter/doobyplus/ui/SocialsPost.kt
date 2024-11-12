@@ -3,12 +3,12 @@ package com.positiveHelicopter.doobyplus.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.utility.convertTweetDateToDDMMMYYYYHHmm
@@ -45,12 +47,16 @@ import com.positiveHelicopter.doobyplus.utility.findHttpsUrl
 @Composable
 internal fun SocialsPost(
     modifier: Modifier = Modifier,
+    id: String,
     text: String,
     date: String,
     link: String,
+    previewLink: String,
     shouldShowImage: Boolean = true,
     launchCustomTab: (String) -> Unit = {},
+    updatePreviewLink: (String, String) -> Unit = { _, _ -> }
 ) {
+    if (previewLink.isEmpty()) updatePreviewLink(id, link)
     Row {
         if(shouldShowImage) {
             Image(
@@ -123,7 +129,7 @@ internal fun SocialsPost(
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End
                 )
-                Box(modifier = Modifier.fillMaxWidth()
+                Column(modifier = Modifier.fillMaxWidth()
                     .wrapContentHeight()
                     .background(colorResource(R.color.color_black_faded))) {
                     Text(
@@ -147,6 +153,18 @@ internal fun SocialsPost(
                         },
                         fontSize = 14.sp
                     )
+                    if (previewLink.isNotEmpty() && previewLink != "null")
+                    AsyncImage(
+                        model = previewLink,
+                        contentDescription = text,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 100.dp, max = 300.dp)
+                            .padding(start = 12.dp),
+                        contentScale = ContentScale.Fit,
+                        placeholder = painterResource(R.drawable.jerboa_erm),
+                        error = painterResource(R.drawable.jerboa_erm)
+                    )
                 }
             }
         }
@@ -157,9 +175,11 @@ internal fun SocialsPost(
 @Composable
 internal fun SocialsPostPreview() {
     SocialsPost(
+        id = "",
         text = "This is a post This is a post This is a post This is a post This is a post This is a post",
         date = " November 03, 2024 at 01:03PM",
-        link = "https://x.com/dooby3D/status/1853188180381716578"
+        link = "https://x.com/dooby3D/status/1853188180381716578",
+        previewLink = ""
     )
 }
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 
 class DoobSocialsRepository @Inject constructor(
     @Dispatcher(IO) private val dispatcher: CoroutineDispatcher,
@@ -50,6 +51,31 @@ class DoobSocialsRepository @Inject constructor(
 
     override suspend fun insertTweets(tweets: List<TweetEntity>) {
         tweetDao.insertTweets(tweets)
+    }
+
+    override suspend fun updateTweetPreview(
+        id: String,
+        url: String
+    ) = withContext(dispatcher) {
+        try {
+            val doc = Jsoup.connect(url)
+                .userAgent("googlebot")
+                .timeout(3000)
+                .get()
+            val image = doc.select("meta[property=og:image]")
+            if (image.isEmpty()) {
+                tweetDao.updateTweetPreview(id, "null")
+                return@withContext
+            }
+            val content = image[0].attr("content")
+            if (content.contains("profile_images", ignoreCase = true)) {
+                tweetDao.updateTweetPreview(id, "null")
+                return@withContext
+            }
+            tweetDao.updateTweetPreview(id, content)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun getTwitchVODs(): Flow<List<TwitchVideo>> =

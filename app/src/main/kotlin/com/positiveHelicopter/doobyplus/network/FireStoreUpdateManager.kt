@@ -38,7 +38,8 @@ class FireStoreUpdateManager @Inject constructor(
                     text = obj["text"].toString(),
                     date = obj["date"].toString().trim(),
                     timestamp = obj["timestamp"] as Long? ?: -1,
-                    link = obj["link"].toString().trim()
+                    link = obj["link"].toString().trim(),
+                    previewLink = ""
                 )
             } ?: emptyList()
             socialsRepository.insertTweets(entries)

@@ -16,6 +16,7 @@ import com.positiveHelicopter.doobyplus.utility.di.DispatcherType.IO
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -31,19 +32,22 @@ class SyncWorker @AssistedInject constructor(
         Result.success()
     }
 
-    private fun getCurrentFirebaseToken() {
+    private suspend fun getCurrentFirebaseToken() {
+        val userPreference = socialsRepository.data.first().userPreference
         FirebaseMessaging.getInstance().apply {
             token.addOnCompleteListener { _ -> }
-            subscribeToTopic("twitch_stream_online").addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i("SyncWorker", "Subscribed to twitch_stream_online")
+            if (userPreference.shouldSendTwitchLive)
+                subscribeToTopic("twitch_stream_online").addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i("SyncWorker", "Subscribed to twitch_stream_online")
+                    }
                 }
-            }
-            subscribeToTopic("twitter_post").addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i("SyncWorker", "Subscribed to twitter_post")
+            if (userPreference.shouldSendNewTweet)
+                subscribeToTopic("twitter_post").addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i("SyncWorker", "Subscribed to twitter_post")
+                    }
                 }
-            }
         }
     }
 

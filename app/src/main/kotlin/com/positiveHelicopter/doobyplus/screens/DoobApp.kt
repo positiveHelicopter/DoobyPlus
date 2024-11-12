@@ -51,7 +51,7 @@ internal fun DoobApp(
     setOrientation: (Int) -> Unit = {},
     hideSystemBars: () -> Unit = {},
     openTwitch: ((String, String) -> Unit) -> Unit = {},
-    launchCustomTab: (String, (String, String) -> Unit) -> Unit = { _ ,_ -> },
+    launchCustomTab: (String, Boolean, (String, String) -> Unit) -> Unit = { _ ,_, _ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -106,8 +106,8 @@ internal fun DoobApp(
             socialsScreen(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
-                launchCustomTab = { url ->
-                    launchCustomTab(url) { title, text ->
+                launchCustomTab = { url, shouldRedirectUrl ->
+                    launchCustomTab(url, shouldRedirectUrl) { title, text ->
                         errorTitle = title
                         errorText = text
                         showErrorDialog = true

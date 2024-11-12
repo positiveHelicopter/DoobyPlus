@@ -81,6 +81,7 @@ class DoobActivity: ComponentActivity() {
 
     private fun launchCustomTab(
         url: String,
+        shouldRedirectUrl: Boolean,
         onError: (String, String) -> Unit
     ) {
         try {
@@ -89,9 +90,11 @@ class DoobActivity: ComponentActivity() {
                 .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK,
                     CustomTabColorSchemeParams.Builder().build())
                 .build()
-            val packageName = CustomTabsClient.getPackageName(this, null)
-            if (packageName != null) {
-                intent.intent.`package` = packageName
+            if (!shouldRedirectUrl) {
+                val packageName = CustomTabsClient.getPackageName(this, null)
+                if (packageName != null) {
+                    intent.intent.`package` = packageName
+                }
             }
             intent.launchUrl(this, Uri.parse(url))
         } catch (e: Exception) {

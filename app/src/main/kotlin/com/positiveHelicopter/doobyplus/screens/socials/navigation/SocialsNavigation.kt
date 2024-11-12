@@ -23,7 +23,7 @@ internal fun NavController.navigateToSocials() {
 internal fun NavGraphBuilder.socialsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {},
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     composable(

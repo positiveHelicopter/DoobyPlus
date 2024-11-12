@@ -84,7 +84,7 @@ internal fun SocialsScreen(
     viewModel: SocialsViewModel = hiltViewModel(),
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {},
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -109,7 +109,7 @@ internal fun SocialsScreen(
 internal fun SocialsScreen(
     socialsState: SocialsState,
     modifier: Modifier = Modifier,
-    launchCustomTab: (String) -> Unit = {},
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     innerPadding: PaddingValues = PaddingValues(0.dp),
     logoFontFamily: FontFamily?,
     selectedTabIndex: Int,
@@ -345,9 +345,13 @@ internal fun SocialsViewPager(
     socialsState: SocialsState,
     pagerState: PagerState,
     socialsTab: SocialsTab,
-    launchCustomTab: (String) -> Unit = {},
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     val title = socialsTab.title
+    val shouldRedirectUrl = when(socialsState) {
+        is SocialsState.Success -> socialsState.data.userPreference.shouldRedirectUrl
+        else -> true
+    }
     val dataList: List<List<TwitchVideo>> = when(title) {
         "Twitch" -> {
             val videos = when(socialsState) {
@@ -416,7 +420,7 @@ internal fun SocialsViewPager(
                 items(itemList) {
                     SocialsCard(
                         modifier = modifier.clickable(
-                            onClick = { launchCustomTab(it.url) }
+                            onClick = { launchCustomTab(it.url, shouldRedirectUrl) }
                         ),
                         title = it.title,
                         date = it.date.convertIsoToDDMMMYYYYHHmm(),
@@ -433,11 +437,15 @@ internal fun SocialsViewPager(
 internal fun LazyPostsList(
     modifier: Modifier = Modifier,
     socialsState: SocialsState,
-    launchCustomTab: (String) -> Unit = {},
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     val posts = when(socialsState) {
         is SocialsState.Success -> socialsState.data.tweets
         else -> listOf()
+    }
+    val shouldRedirectUrl = when(socialsState) {
+        is SocialsState.Success -> socialsState.data.userPreference.shouldRedirectUrl
+        else -> true
     }
     LazyColumn(modifier = modifier.background(colorResource(R.color.color_almost_black_faded)),
         contentPadding = PaddingValues(top = 20.dp)) {
@@ -447,7 +455,7 @@ internal fun LazyPostsList(
                 date = posts[index].date,
                 link = posts[index].link,
                 shouldShowImage = index == 0,
-                launchCustomTab = launchCustomTab
+                launchCustomTab = { launchCustomTab(it, shouldRedirectUrl) }
             )
         }
     }

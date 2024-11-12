@@ -28,7 +28,9 @@ internal fun NavGraphBuilder.settingsScreen(
 ) {
     composable(SETTINGS_ROUTE,
         enterTransition = { slideInHorizontally(initialOffsetX = {it}) },
-        exitTransition = { slideOutHorizontally(targetOffsetX = {it}) }
+        popEnterTransition = { slideInHorizontally(initialOffsetX = {it}) },
+        exitTransition = { slideOutHorizontally(targetOffsetX = {it}) },
+        popExitTransition = { slideOutHorizontally(targetOffsetX = {it}) }
     ) {
         SettingsScreen(
             innerPadding = innerPadding,

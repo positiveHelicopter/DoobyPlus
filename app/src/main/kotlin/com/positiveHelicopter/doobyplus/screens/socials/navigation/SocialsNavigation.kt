@@ -1,5 +1,6 @@
 package com.positiveHelicopter.doobyplus.screens.socials.navigation
 
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,7 +29,9 @@ internal fun NavGraphBuilder.socialsScreen(
     composable(
         SOCIALS_ROUTE,
         enterTransition = null,
-        exitTransition = null
+        exitTransition = { fadeOut() },
+        popEnterTransition = null,
+        popExitTransition = { fadeOut() }
     ) {
         SocialsScreen(
             innerPadding = innerPadding,

@@ -1,5 +1,7 @@
 package com.positiveHelicopter.doobyplus.screens
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -82,7 +84,11 @@ internal fun DoobApp(
         NavHost(
             modifier = modifier.fillMaxSize(),
             navController = navController,
-            startDestination = SOCIALS_ROUTE
+            startDestination = SOCIALS_ROUTE,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) {
             watchScreen(
                 innerPadding = innerPadding,

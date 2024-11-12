@@ -2,7 +2,6 @@ package com.positiveHelicopter.doobyplus.screens.socials
 
 import android.content.pm.ActivityInfo
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -53,7 +52,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -68,11 +66,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
 import com.positiveHelicopter.doobyplus.model.TwitchVideo
+import com.positiveHelicopter.doobyplus.ui.ImagePreview
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
 import com.positiveHelicopter.doobyplus.ui.SocialsCard
 import com.positiveHelicopter.doobyplus.ui.SocialsChip
@@ -142,25 +140,10 @@ internal fun SocialsScreen(
             }
             if (socialsState.data.previewImage.shouldPreviewImage) {
                 toggleBottomBarHidden(true)
-                BackHandler { setPreviewImage(false, "") }
-                Box(modifier = modifier
-                    .fillMaxSize()
-                    .zIndex(1f)
-                    .clickable(
-                        interactionSource = null,
-                        indication = null,
-                        onClick = {}
-                    )
-                    .background(colorResource(R.color.color_black_faded))
-                ) {
-                    AsyncImage(
-                        model = socialsState.data.previewImage.url,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Fit,
-                        error = painterResource(R.drawable.jerboa_erm)
-                    )
-                }
+                ImagePreview(
+                    url = socialsState.data.previewImage.url,
+                    setPreviewImage = setPreviewImage
+                )
             } else {
                 toggleBottomBarHidden(false)
             }

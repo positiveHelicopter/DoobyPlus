@@ -1,6 +1,9 @@
 package com.positiveHelicopter.doobyplus.screens.settings
 
 import android.content.pm.ActivityInfo
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,13 +35,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
+import com.positiveHelicopter.doobyplus.model.CreditsGroup
 import com.positiveHelicopter.doobyplus.model.SettingsData
 import com.positiveHelicopter.doobyplus.model.SettingsGroup
 
@@ -48,7 +57,7 @@ internal fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val settingsState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -86,7 +95,8 @@ internal fun SettingsScreen(
         setShouldRedirectUrl = viewModel::setShouldRedirectUrl,
         setShouldSendTwitchLive = viewModel::setShouldSendTwitchLive,
         setShouldSendNewTweet = viewModel::setShouldSendNewTweet,
-        launchCustomTab = launchCustomTab
+        launchCustomTab = launchCustomTab,
+        setIsCredits = viewModel::setIsCredits
     )
 }
 
@@ -99,8 +109,24 @@ internal fun SettingsScreen(
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
+    setIsCredits: (Boolean) -> Unit = {}
 ) {
+    var isCredits by remember { mutableStateOf(false) }
+    val title = when(settingsState) {
+        is SettingsState.Success -> {
+            if (settingsState.data.isCredits) {
+                isCredits = true
+                BackHandler { setIsCredits(false) }
+                SETTINGS_CREDITS
+            }
+            else {
+                isCredits = false
+                SETTINGS_TITLE
+            }
+        }
+        else -> SETTINGS_TITLE
+    }
     Box(modifier = modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.setting_background),
@@ -121,21 +147,41 @@ internal fun SettingsScreen(
                 )
                 .background(color = colorResource(R.color.colorPrimary))
         ) {
-            Text(text = "Settings",
+            Text(text = title,
                 modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp),
                 fontSize = 35.sp,
-                color = colorResource(R.color.backgroundColor),
+                color = colorResource(R.color.color_black_faded),
                 fontWeight = FontWeight.W400
             )
-            LazyColumn(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
-                items(settingsList.size) { index ->
-                    SettingsCluster(
+            Box {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = !isCredits,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    LazyColumn(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
+                        items(settingsList.size) { index ->
+                            SettingsCluster(
+                                modifier = modifier,
+                                settingsState = settingsState,
+                                group = settingsList[index],
+                                setShouldRedirectUrl = setShouldRedirectUrl,
+                                setShouldSendTwitchLive = setShouldSendTwitchLive,
+                                setShouldSendNewTweet = setShouldSendNewTweet,
+                                launchCustomTab = launchCustomTab,
+                                setIsCredits = setIsCredits
+                            )
+                        }
+                    }
+                }
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = isCredits,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    SettingsCredits(
                         modifier = modifier,
                         settingsState = settingsState,
-                        group = settingsList[index],
-                        setShouldRedirectUrl = setShouldRedirectUrl,
-                        setShouldSendTwitchLive = setShouldSendTwitchLive,
-                        setShouldSendNewTweet = setShouldSendNewTweet,
                         launchCustomTab = launchCustomTab
                     )
                 }
@@ -152,25 +198,30 @@ internal fun SettingsCluster(
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
+    setIsCredits: (Boolean) -> Unit = {}
 ) {
+    val shouldRedirectUrl = when (settingsState) {
+        is SettingsState.Success -> settingsState.data.shouldRedirectUrl
+        is SettingsState.Loading -> true
+    }
     if (group.isButton) {
         val aboutLink = stringResource(R.string.about_dooby_link)
         var bottomPadding by remember { mutableStateOf(20.dp) }
         val onClick: () -> Unit = when (group.title) {
             SETTINGS_ABOUT_DOOBY -> {
                 bottomPadding = 0.dp
-                { launchCustomTab(aboutLink) }
+                { launchCustomTab(aboutLink, shouldRedirectUrl) }
             }
             else -> {
                 bottomPadding = 20.dp
-                {}
+                { setIsCredits(true) }
             }
         }
         TextButton(onClick = onClick,
             modifier = modifier.padding(bottom = bottomPadding),
             colors = ButtonDefaults.textButtonColors().copy(
-                contentColor = colorResource(R.color.color_highlight_purple)
+                contentColor = colorResource(R.color.color_dark_blue)
             )) {
             Text(text = group.title, fontSize = 14.sp)
         }
@@ -263,6 +314,60 @@ internal fun SettingsRow(
     }
 }
 
+@Composable
+internal fun SettingsCredits(
+    modifier: Modifier = Modifier,
+    settingsState: SettingsState,
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> }
+) {
+    val shouldRedirectUrl = when (settingsState) {
+        is SettingsState.Success -> settingsState.data.shouldRedirectUrl
+        is SettingsState.Loading -> true
+    }
+    val credits = listOf(
+        CreditsGroup(
+            name = stringResource(R.string.credit_dooby),
+            handle = stringResource(R.string.credit_dooby_twitter),
+            description = stringResource(R.string.credit_dooby_description)
+        ),
+        CreditsGroup(
+            name = stringResource(R.string.credit_splash_screen),
+            handle = stringResource(R.string.credit_splash_screen_twitter),
+            description = stringResource(R.string.credit_splash_screen_description)
+        ),
+    )
+    LazyColumn(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
+        items(credits.size) { index ->
+            Text(
+                text = buildAnnotatedString {
+                    append("${credits[index].description} - ")
+                    append("${credits[index].name} ")
+                    val link = "https://x.com/${
+                        credits[index].handle.replace("@", "")
+                    }"
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = link,
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = colorResource(R.color.color_dark_blue)
+                                )
+                            )
+                        ) {
+                            launchCustomTab(link, shouldRedirectUrl)
+                        }
+                    ) {
+                        append(credits[index].handle)
+                    }
+                },
+                modifier = modifier.padding(vertical = 5.dp),
+                fontSize = 20.sp,
+                color = colorResource(R.color.color_black_faded),
+            )
+        }
+    }
+}
+
 @DoobyPreview
 @Composable
 internal fun SettingsScreenPreview() {
@@ -271,7 +376,8 @@ internal fun SettingsScreenPreview() {
             SettingsData(
                 shouldRedirectUrl = true,
                 shouldSendTwitchLive = true,
-                shouldSendNewTweet = false
+                shouldSendNewTweet = false,
+                isCredits = true
             )
         ),
         settingsList = listOf(
@@ -307,3 +413,4 @@ internal const val SETTINGS_TWITCH_LIVE = "Twitch Goes Live"
 internal const val SETTINGS_NEW_TWEET = "New Tweet"
 internal const val SETTINGS_ABOUT_DOOBY = "About Dooby3D"
 internal const val SETTINGS_CREDITS = "Credits"
+internal const val SETTINGS_TITLE = "Settings"

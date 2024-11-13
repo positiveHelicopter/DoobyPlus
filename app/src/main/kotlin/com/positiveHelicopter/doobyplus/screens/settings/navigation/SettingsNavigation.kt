@@ -25,7 +25,7 @@ internal fun NavController.navigateToSettings() {
 internal fun NavGraphBuilder.settingsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
-    launchCustomTab: (String) -> Unit = {}
+    launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     composable(SETTINGS_ROUTE,
         enterTransition = { slideInHorizontally(initialOffsetX = {it}) },

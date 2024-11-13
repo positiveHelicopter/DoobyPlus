@@ -119,8 +119,8 @@ internal fun DoobApp(
             settingsScreen(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
-                launchCustomTab = { url ->
-                    launchCustomTab(url, false) { title, text ->
+                launchCustomTab = { url, shouldRedirectUrl ->
+                    launchCustomTab(url, shouldRedirectUrl) { title, text ->
                         errorTitle = title
                         errorText = text
                         showErrorDialog = true

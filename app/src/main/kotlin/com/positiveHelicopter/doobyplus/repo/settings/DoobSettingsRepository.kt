@@ -22,7 +22,8 @@ class DoobSettingsRepository @Inject constructor(
         SettingsData(
             shouldRedirectUrl = it.shouldRedirectUrl,
             shouldSendTwitchLive = it.shouldSendTwitchLive,
-            shouldSendNewTweet = it.shouldSendNewTweet
+            shouldSendNewTweet = it.shouldSendNewTweet,
+            isCredits = false
         )
     }
 

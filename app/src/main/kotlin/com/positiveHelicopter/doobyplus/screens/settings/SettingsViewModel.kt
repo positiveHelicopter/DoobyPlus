@@ -1,24 +1,34 @@
 package com.positiveHelicopter.doobyplus.screens.settings
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.positiveHelicopter.doobyplus.model.SettingsData
 import com.positiveHelicopter.doobyplus.repo.settings.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val settingsRepository: SettingsRepository
 ): ViewModel() {
-    val uiState: StateFlow<SettingsState> = settingsRepository.data.map {
-        SettingsState.Success(it)
-    }.stateIn(
+    private val isCreditsKey = "isCreditsKey"
+    private val isCredits = savedStateHandle.getStateFlow(
+        key = isCreditsKey,
+        initialValue = false
+    )
+    val uiState = combine(
+        settingsRepository.data,
+        isCredits,
+        transform = { data, isCredits ->
+            SettingsState.Success(data.copy(isCredits = isCredits))
+        }
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = SettingsState.Loading
@@ -40,6 +50,10 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.setShouldSendNewTweet(shouldSendNewTweet)
         }
+    }
+
+    fun setIsCredits(isCredits: Boolean) {
+        savedStateHandle[isCreditsKey] = isCredits
     }
 }
 

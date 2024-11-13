@@ -8,7 +8,11 @@
     <string name="error_message_open_twitch">The Twitch app needs to be installed on your device to redirect to Twitch.</string>
 
     <!-- credits -->
-    <string name="credit_dooby">doob @dooby3D</string>
-    <string name="credit_splash_screen">Borksie @BorkNeko</string>
+    <string name="credit_dooby">doob</string>
+    <string name="credit_dooby_twitter">\@dooby3D</string>
+    <string name="credit_dooby_description">General Assets</string>
+    <string name="credit_splash_screen">Borksie</string>
+    <string name="credit_splash_screen_twitter">\@BorkNeko</string>
+    <string name="credit_splash_screen_description">Splash Screen Animation</string>
     <string name="about_dooby_link">https://dooby3d.tv/#about</string>
 </resources>

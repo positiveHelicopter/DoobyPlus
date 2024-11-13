@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,21 +47,34 @@ internal fun SettingsScreen(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    setOrientation: (Int) -> Unit = {}
+    setOrientation: (Int) -> Unit = {},
+    launchCustomTab: (String) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val settingsState by viewModel.uiState.collectAsStateWithLifecycle()
     val settingsList = listOf(
         SettingsGroup(
             title = "General",
-            settings = listOf(SETTINGS_REDIRECT_URL)
+            settings = listOf(SETTINGS_REDIRECT_URL),
+            isButton = false
         ),
         SettingsGroup(
             title = "Notifications",
             settings = listOf(
                 SETTINGS_TWITCH_LIVE,
-                SETTINGS_NEW_TWEET
-            )
+                SETTINGS_NEW_TWEET,
+            ),
+            isButton = false
+        ),
+        SettingsGroup(
+            title = SETTINGS_ABOUT_DOOBY,
+            settings = listOf(),
+            isButton = true
+        ),
+        SettingsGroup(
+            title = SETTINGS_CREDITS,
+            settings = listOf(),
+            isButton = true
         )
     )
     //add credits
@@ -69,7 +85,8 @@ internal fun SettingsScreen(
         settingsList = settingsList,
         setShouldRedirectUrl = viewModel::setShouldRedirectUrl,
         setShouldSendTwitchLive = viewModel::setShouldSendTwitchLive,
-        setShouldSendNewTweet = viewModel::setShouldSendNewTweet
+        setShouldSendNewTweet = viewModel::setShouldSendNewTweet,
+        launchCustomTab = launchCustomTab
     )
 }
 
@@ -81,7 +98,8 @@ internal fun SettingsScreen(
     settingsList: List<SettingsGroup>,
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
-    setShouldSendNewTweet: (Boolean) -> Unit = {}
+    setShouldSendNewTweet: (Boolean) -> Unit = {},
+    launchCustomTab: (String) -> Unit = {}
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Image(
@@ -90,17 +108,18 @@ internal fun SettingsScreen(
             modifier = modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        Column(modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(20.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(
-                width = 2.dp,
-                color = colorResource(R.color.color_black_faded),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(color = colorResource(R.color.colorPrimary))
+        Column(
+            modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .border(
+                    width = 2.dp,
+                    color = colorResource(R.color.color_black_faded),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .background(color = colorResource(R.color.colorPrimary))
         ) {
             Text(text = "Settings",
                 modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp),
@@ -116,7 +135,8 @@ internal fun SettingsScreen(
                         group = settingsList[index],
                         setShouldRedirectUrl = setShouldRedirectUrl,
                         setShouldSendTwitchLive = setShouldSendTwitchLive,
-                        setShouldSendNewTweet = setShouldSendNewTweet
+                        setShouldSendNewTweet = setShouldSendNewTweet,
+                        launchCustomTab = launchCustomTab
                     )
                 }
             }
@@ -131,8 +151,31 @@ internal fun SettingsCluster(
     group: SettingsGroup,
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
-    setShouldSendNewTweet: (Boolean) -> Unit = {}
+    setShouldSendNewTweet: (Boolean) -> Unit = {},
+    launchCustomTab: (String) -> Unit = {}
 ) {
+    if (group.isButton) {
+        val aboutLink = stringResource(R.string.about_dooby_link)
+        var bottomPadding by remember { mutableStateOf(20.dp) }
+        val onClick: () -> Unit = when (group.title) {
+            SETTINGS_ABOUT_DOOBY -> {
+                bottomPadding = 0.dp
+                { launchCustomTab(aboutLink) }
+            }
+            else -> {
+                bottomPadding = 20.dp
+                {}
+            }
+        }
+        TextButton(onClick = onClick,
+            modifier = modifier.padding(bottom = bottomPadding),
+            colors = ButtonDefaults.textButtonColors().copy(
+                contentColor = colorResource(R.color.color_highlight_purple)
+            )) {
+            Text(text = group.title, fontSize = 14.sp)
+        }
+        return
+    }
     Text(text = group.title,
         fontSize = 21.sp,
         color = colorResource(R.color.backgroundColor),
@@ -234,14 +277,26 @@ internal fun SettingsScreenPreview() {
         settingsList = listOf(
             SettingsGroup(
                 title = "General",
-                settings = listOf(SETTINGS_REDIRECT_URL)
+                settings = listOf(SETTINGS_REDIRECT_URL),
+                isButton = false
             ),
             SettingsGroup(
                 title = "Notifications",
                 settings = listOf(
                     SETTINGS_TWITCH_LIVE,
                     SETTINGS_NEW_TWEET
-                )
+                ),
+                isButton = false
+            ),
+            SettingsGroup(
+                title = SETTINGS_ABOUT_DOOBY,
+                settings = listOf(),
+                isButton = true
+            ),
+            SettingsGroup(
+                title = SETTINGS_CREDITS,
+                settings = listOf(),
+                isButton = true
             )
         )
     )
@@ -250,3 +305,5 @@ internal fun SettingsScreenPreview() {
 internal const val SETTINGS_REDIRECT_URL = "Redirect to External Apps"
 internal const val SETTINGS_TWITCH_LIVE = "Twitch Goes Live"
 internal const val SETTINGS_NEW_TWEET = "New Tweet"
+internal const val SETTINGS_ABOUT_DOOBY = "About Dooby3D"
+internal const val SETTINGS_CREDITS = "Credits"

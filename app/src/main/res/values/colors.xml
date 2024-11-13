@@ -10,6 +10,7 @@
 
     <color name="backgroundColor">#25284b</color>
     <color name="colorPrimary">#fdd292</color>
+    <color name="color_highlight_purple">#6b53a4</color>
     <color name="color_light_blue">#b3e1f4</color>
     <color name="color_light_red">#f17473</color>
     <color name="color_almost_black">#282828</color>
@@ -19,6 +20,7 @@
     <color name="color_black_faded">#DE000000</color>
     <color name="color_purple">#6750a4</color>
     <color name="color_light_green">#c0d29e</color>
+    <color name="color_dark_green">#578650</color>
 
     <color name="twitch_color">#9146FF</color>
     <color name="youtube_color">#FF0000</color>

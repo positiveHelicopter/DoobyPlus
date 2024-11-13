@@ -16,6 +16,7 @@
     <color name="color_light_red">#f17473</color>
     <color name="color_almost_black">#282828</color>
     <color name="color_almost_black_faded">#F5282828</color>
+    <color name="color_almost_black_high_faded">#80282828</color>
     <color name="color_white_faded">#DEFFFFFF</color>
     <color name="color_grey_faded">#DEBCBCBC</color>
     <color name="color_black_faded">#DE000000</color>

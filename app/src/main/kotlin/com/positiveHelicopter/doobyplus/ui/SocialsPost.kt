@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
@@ -131,45 +137,80 @@ internal fun SocialsPost(
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.End
                 )
-                Column(modifier = Modifier.fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(colorResource(R.color.color_black_faded))) {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 30.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
-                        text = buildAnnotatedString {
-                            withLink(
-                                LinkAnnotation.Url(
-                                    url = link,
-                                    styles = TextLinkStyles(
-                                        style = SpanStyle(
-                                            color = colorResource(R.color.color_white_faded)
-                                        )
-                                    )
-                                ) {
-                                    launchCustomTab(link)
-                                }
-                            ) {
-                                append(link)
-                            }
-                        },
-                        fontSize = 14.sp
-                    )
-                    if (previewLink.isNotEmpty() && previewLink != "null")
-                    AsyncImage(
-                        model = previewLink,
-                        contentDescription = text,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 100.dp, max = 300.dp)
-                            .padding(start = 12.dp)
-                            .clickable { setPreviewImage(true, previewLink) },
-                        contentScale = ContentScale.Fit,
-                        placeholder = painterResource(R.drawable.jerboa_erm),
-                        error = painterResource(R.drawable.jerboa_erm)
-                    )
-                }
+                SocialsPostImage(
+                    text = text,
+                    link = link,
+                    previewLink = previewLink,
+                    launchCustomTab = launchCustomTab,
+                    setPreviewImage = setPreviewImage
+                )
             }
+        }
+    }
+}
+
+@Composable
+internal fun SocialsPostImage(
+    text: String,
+    link: String,
+    previewLink: String,
+    launchCustomTab: (String) -> Unit = {},
+    setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
+) {
+    Column(modifier = Modifier.fillMaxWidth()
+        .wrapContentHeight()
+        .background(colorResource(R.color.color_black_faded))) {
+        Text(
+            modifier = Modifier.padding(
+                start = 30.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
+            text = buildAnnotatedString {
+                withLink(
+                    LinkAnnotation.Url(
+                        url = link,
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = colorResource(R.color.color_white_faded)
+                            )
+                        )
+                    ) {
+                        launchCustomTab(link)
+                    }
+                ) {
+                    append(link)
+                }
+            },
+            fontSize = 14.sp
+        )
+        if (previewLink.isEmpty() || previewLink == "null") return
+        var tag by remember { mutableStateOf("") }
+        if (previewLink.contains("ext_tw_video", ignoreCase = true)) {
+            tag = "Video Preview"
+        }
+        if (previewLink.contains("tweet_video", ignoreCase = true)) {
+            tag = "GIF Preview"
+        }
+        Box {
+            AsyncImage(
+                model = previewLink,
+                contentDescription = text,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 100.dp, max = 300.dp)
+                    .padding(start = 12.dp)
+                    .clickable { setPreviewImage(true, previewLink) },
+                contentScale = ContentScale.Fit,
+                placeholder = painterResource(R.drawable.jerboa_erm),
+                error = painterResource(R.drawable.jerboa_erm)
+            )
+            if (tag.isEmpty()) return@Box
+            Text(text = tag,
+                modifier = Modifier.align(Alignment.BottomStart)
+                    .padding(start = 20.dp, bottom = 10.dp)
+                    .background(color = colorResource(R.color.color_almost_black_high_faded))
+                    .padding(5.dp),
+                color = colorResource(R.color.color_white_faded),
+                fontSize = 12.sp
+            )
         }
     }
 }

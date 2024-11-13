@@ -18,6 +18,7 @@
     <color name="color_grey_faded">#DEBCBCBC</color>
     <color name="color_black_faded">#DE000000</color>
     <color name="color_purple">#6750a4</color>
+    <color name="color_light_green">#c0d29e</color>
 
     <color name="twitch_color">#9146FF</color>
     <color name="youtube_color">#FF0000</color>

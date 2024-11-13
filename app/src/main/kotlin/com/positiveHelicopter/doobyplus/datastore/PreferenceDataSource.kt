@@ -15,8 +15,8 @@ class PreferenceDataSource @Inject constructor(
         UserPreference(
             isFirstTimeNotification = preference[FIRST_TIME_NOTIFICATION] ?: true,
             shouldRedirectUrl = preference[SHOULD_REDIRECT_URL] ?: true,
-            shouldSendTwitchLive = preference[SHOULD_SEND_TWITCH_LIVE] ?: true,
-            shouldSendNewTweet = preference[SHOULD_SEND_NEW_TWEET] ?: true
+            shouldSendTwitchLive = preference[SHOULD_SEND_TWITCH_LIVE] ?: false,
+            shouldSendNewTweet = preference[SHOULD_SEND_NEW_TWEET] ?: false
         )
     }
 

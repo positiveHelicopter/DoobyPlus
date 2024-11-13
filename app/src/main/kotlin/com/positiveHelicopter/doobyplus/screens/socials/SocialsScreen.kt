@@ -141,6 +141,7 @@ internal fun SocialsScreen(
             if (socialsState.data.previewImage.shouldPreviewImage) {
                 toggleBottomBarHidden(true)
                 ImagePreview(
+                    innerPadding = innerPadding,
                     url = socialsState.data.previewImage.url,
                     setPreviewImage = setPreviewImage
                 )

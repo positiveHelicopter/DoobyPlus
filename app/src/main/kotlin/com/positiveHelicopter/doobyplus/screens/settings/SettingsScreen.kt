@@ -2,8 +2,10 @@ package com.positiveHelicopter.doobyplus.screens.settings
 
 import android.content.pm.ActivityInfo
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,10 +17,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -86,7 +93,6 @@ internal fun SettingsScreen(
             isButton = true
         )
     )
-    //add credits
     SettingsScreen(
         modifier = modifier,
         innerPadding = innerPadding,
@@ -147,12 +153,32 @@ internal fun SettingsScreen(
                 )
                 .background(color = colorResource(R.color.colorPrimary))
         ) {
-            Text(text = title,
-                modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp),
-                fontSize = 35.sp,
-                color = colorResource(R.color.color_black_faded),
-                fontWeight = FontWeight.W400
-            )
+            Row(modifier = modifier.fillMaxWidth().wrapContentHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                androidx.compose.animation.AnimatedVisibility(isCredits,
+                    enter = fadeIn() + expandHorizontally(),
+                    exit = fadeOut() + shrinkHorizontally()
+                ) {
+                    IconButton(
+                        onClick = { setIsCredits(false) },
+                        modifier = modifier.padding(start = 30.dp)
+                    ) {
+                        Icon(
+                            modifier = modifier.size(30.dp),
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                }
+                Text(text = title,
+                    modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                    fontSize = 35.sp,
+                    color = colorResource(R.color.color_black_faded),
+                    fontWeight = FontWeight.W400
+                )
+            }
             Box {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = !isCredits,

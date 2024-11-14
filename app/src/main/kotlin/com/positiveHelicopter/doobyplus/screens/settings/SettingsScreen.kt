@@ -65,6 +65,7 @@ internal fun SettingsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val settingsState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -102,7 +103,8 @@ internal fun SettingsScreen(
         setShouldSendTwitchLive = viewModel::setShouldSendTwitchLive,
         setShouldSendNewTweet = viewModel::setShouldSendNewTweet,
         launchCustomTab = launchCustomTab,
-        setIsCredits = viewModel::setIsCredits
+        setIsCredits = viewModel::setIsCredits,
+        askNotificationPermission = askNotificationPermission
     )
 }
 
@@ -116,7 +118,8 @@ internal fun SettingsScreen(
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    setIsCredits: (Boolean) -> Unit = {}
+    setIsCredits: (Boolean) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     var isCredits by remember { mutableStateOf(false) }
     val title = when(settingsState) {
@@ -195,7 +198,8 @@ internal fun SettingsScreen(
                                 setShouldSendTwitchLive = setShouldSendTwitchLive,
                                 setShouldSendNewTweet = setShouldSendNewTweet,
                                 launchCustomTab = launchCustomTab,
-                                setIsCredits = setIsCredits
+                                setIsCredits = setIsCredits,
+                                askNotificationPermission = askNotificationPermission
                             )
                         }
                     }
@@ -225,7 +229,8 @@ internal fun SettingsCluster(
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
-    setIsCredits: (Boolean) -> Unit = {}
+    setIsCredits: (Boolean) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     val shouldRedirectUrl = when (settingsState) {
         is SettingsState.Success -> settingsState.data.shouldRedirectUrl
@@ -277,7 +282,8 @@ internal fun SettingsCluster(
                 text = it,
                 setShouldRedirectUrl = setShouldRedirectUrl,
                 setShouldSendTwitchLive = setShouldSendTwitchLive,
-                setShouldSendNewTweet = setShouldSendNewTweet
+                setShouldSendNewTweet = setShouldSendNewTweet,
+                askNotificationPermission = askNotificationPermission
             )
         }
     }
@@ -290,7 +296,8 @@ internal fun SettingsRow(
     text: String,
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
-    setShouldSendNewTweet: (Boolean) -> Unit = {}
+    setShouldSendNewTweet: (Boolean) -> Unit = {},
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     var checked by remember { mutableStateOf(true) }
     var onCheckedChange: (Boolean) -> Unit = {}
@@ -303,11 +310,21 @@ internal fun SettingsRow(
                 }
                 SETTINGS_TWITCH_LIVE -> {
                     checked = settingsState.data.shouldSendTwitchLive
-                    onCheckedChange = { setShouldSendTwitchLive(it) }
+                    onCheckedChange = {
+                        if(it) askNotificationPermission { requestPermission ->
+                            requestPermission()
+                        }
+                        setShouldSendTwitchLive(it)
+                    }
                 }
                 SETTINGS_NEW_TWEET -> {
                     checked = settingsState.data.shouldSendNewTweet
-                    onCheckedChange = { setShouldSendNewTweet(it) }
+                    onCheckedChange = {
+                        if(it) askNotificationPermission { requestPermission ->
+                            requestPermission()
+                        }
+                        setShouldSendNewTweet(it)
+                    }
                 }
             }
         }

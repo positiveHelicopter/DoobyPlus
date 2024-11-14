@@ -125,7 +125,8 @@ internal fun DoobApp(
                         errorText = text
                         showErrorDialog = true
                     }
-                }
+                },
+                askNotificationPermission = askNotificationPermission
             )
         }
     }

@@ -26,6 +26,7 @@ internal fun NavGraphBuilder.settingsScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     composable(SETTINGS_ROUTE,
         enterTransition = { slideInHorizontally(initialOffsetX = {it}) },
@@ -36,7 +37,8 @@ internal fun NavGraphBuilder.settingsScreen(
         SettingsScreen(
             innerPadding = innerPadding,
             setOrientation = setOrientation,
-            launchCustomTab = launchCustomTab
+            launchCustomTab = launchCustomTab,
+            askNotificationPermission = askNotificationPermission
         )
     }
 }

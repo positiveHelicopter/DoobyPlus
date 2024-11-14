@@ -5,12 +5,14 @@ import android.widget.ImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -66,18 +68,32 @@ internal fun WelcomeScreen(
             .fillMaxWidth()
             .padding(bottom = 30.dp + botInset),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "allow notification")
-            Button(onClick = {
-                askNotificationPermission { requestPermission ->
-                    requestPermission()
-                }
-            }) {
-                Text("Allow")
+            Text(text = stringResource(R.string.welcome_message),
+                modifier = modifier.fillMaxWidth().padding(20.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp
+            )
+            Button(
+                modifier = modifier.padding(10.dp),
+                onClick = {
+                    askNotificationPermission { requestPermission ->
+                        requestPermission()
+                    }
+                },
+                contentPadding = PaddingValues(horizontal = 50.dp, vertical = 15.dp),
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = colorResource(R.color.color_dark_green)
+                )
+            ) {
+                Text(text = stringResource(R.string.welcome_allow_notifications),
+                    fontSize = 16.sp)
             }
             TextButton(onClick = {
                 setIsFirstTimeNotification(false)
             }) {
-                Text("Skip")
+                Text(text = stringResource(R.string.welcome_skip),
+                    fontSize = 16.sp,
+                    color = colorResource(R.color.color_dark_green))
             }
         }
     }

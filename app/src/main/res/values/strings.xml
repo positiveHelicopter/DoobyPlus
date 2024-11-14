@@ -2,7 +2,9 @@
     <string name="app_name">DoobyPlus</string>
     <!-- welcome screen -->
     <string name="welcome_title">Welcome to DoobyPlus!</string>
-
+    <string name="welcome_allow_notifications">Allow Notifications</string>
+    <string name="welcome_skip">Skip</string>
+    <string name="welcome_message">Turn on notifications to get updates from Dooby\'s Youtube, Twitch and X.</string>
     <!-- error messages -->
     <string name="error_title_custom_tab">Failed to open link</string>
     <string name="error_message_custom_tab">Unable to find compatible browsers/apps to open link.</string>

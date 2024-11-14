@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">DoobyPlus</string>
+    <!-- welcome screen -->
+    <string name="welcome_title">Welcome to DoobyPlus!</string>
 
     <!-- error messages -->
     <string name="error_title_custom_tab">Failed to open link</string>
@@ -14,5 +16,8 @@
     <string name="credit_splash_screen">Borksie</string>
     <string name="credit_splash_screen_twitter">\@BorkNeko</string>
     <string name="credit_splash_screen_description">Splash Screen Animation</string>
+    <string name="credit_welcome">Dr.Pigeon PhD</string>
+    <string name="credit_welcome_twitter">\@PhdPigeon</string>
+    <string name="credit_Welcome_description">Welcome Screen Animation</string>
     <string name="about_dooby_link">https://dooby3d.tv/#about</string>
 </resources>

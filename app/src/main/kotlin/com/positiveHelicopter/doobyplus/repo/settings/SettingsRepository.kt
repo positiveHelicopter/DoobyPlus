@@ -8,4 +8,5 @@ interface SettingsRepository {
     suspend fun setShouldRedirectUrl(shouldRedirectUrl: Boolean)
     suspend fun setShouldSendTwitchLive(shouldSendTwitchLive: Boolean)
     suspend fun setShouldSendNewTweet(shouldSendNewTweet: Boolean)
+    suspend fun setShouldSendYoutubeUpload(shouldSendYoutubeUpload: Boolean)
 }

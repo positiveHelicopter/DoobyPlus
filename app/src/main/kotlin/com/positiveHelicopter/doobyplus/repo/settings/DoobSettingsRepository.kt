@@ -23,6 +23,7 @@ class DoobSettingsRepository @Inject constructor(
             shouldRedirectUrl = it.shouldRedirectUrl,
             shouldSendTwitchLive = it.shouldSendTwitchLive,
             shouldSendNewTweet = it.shouldSendNewTweet,
+            shouldSendYoutubeUpload = it.shouldSendYoutubeUpload,
             isCredits = false
         )
     }
@@ -101,5 +102,40 @@ class DoobSettingsRepository @Inject constructor(
             }
         }
         userPreferenceDataSource.updateShouldSendNewTweet(shouldSendNewTweet)
+    }
+
+    override suspend fun setShouldSendYoutubeUpload(
+        shouldSendYoutubeUpload: Boolean
+    ) = withContext(dispatcher) {
+        FirebaseMessaging.getInstance().apply {
+            if (shouldSendYoutubeUpload) {
+                subscribeToTopic("youtube_upload").addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(
+                            "DoobSettingsRepository",
+                            "Subscribed to youtube_upload"
+                        )
+                    } else {
+                        CoroutineScope(dispatcher).launch {
+                            userPreferenceDataSource.updateShouldSendYoutubeUpload(false)
+                        }
+                    }
+                }
+            } else {
+                unsubscribeFromTopic("youtube_upload").addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(
+                            "DoobSettingsRepository",
+                            "Unsubscribed from youtube_upload"
+                        )
+                    } else {
+                        CoroutineScope(dispatcher).launch {
+                            userPreferenceDataSource.updateShouldSendYoutubeUpload(true)
+                        }
+                    }
+                }
+            }
+        }
+        userPreferenceDataSource.updateShouldSendYoutubeUpload(shouldSendYoutubeUpload)
     }
 }

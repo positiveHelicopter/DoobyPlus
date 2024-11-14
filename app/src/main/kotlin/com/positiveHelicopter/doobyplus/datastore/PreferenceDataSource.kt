@@ -16,7 +16,8 @@ class PreferenceDataSource @Inject constructor(
             isFirstTimeNotification = preference[FIRST_TIME_NOTIFICATION] ?: true,
             shouldRedirectUrl = preference[SHOULD_REDIRECT_URL] ?: true,
             shouldSendTwitchLive = preference[SHOULD_SEND_TWITCH_LIVE] ?: true,
-            shouldSendNewTweet = preference[SHOULD_SEND_NEW_TWEET] ?: true
+            shouldSendNewTweet = preference[SHOULD_SEND_NEW_TWEET] ?: true,
+            shouldSendYoutubeUpload = preference[SHOULD_SEND_YOUTUBE_UPLOAD] ?: true
         )
     }
 
@@ -43,9 +44,16 @@ class PreferenceDataSource @Inject constructor(
             it[SHOULD_SEND_NEW_TWEET] = shouldSendNewTweet
         }
     }
+
+    suspend fun updateShouldSendYoutubeUpload(shouldSendYoutubeUpload: Boolean) {
+        userPreferences.edit {
+            it[SHOULD_SEND_YOUTUBE_UPLOAD] = shouldSendYoutubeUpload
+        }
+    }
 }
 
 internal val FIRST_TIME_NOTIFICATION = booleanPreferencesKey("first_time_notification")
 internal val SHOULD_REDIRECT_URL = booleanPreferencesKey("should_redirect_url")
 internal val SHOULD_SEND_TWITCH_LIVE = booleanPreferencesKey("should_send_twitch_live")
 internal val SHOULD_SEND_NEW_TWEET = booleanPreferencesKey("should_send_new_tweet")
+internal val SHOULD_SEND_YOUTUBE_UPLOAD = booleanPreferencesKey("should_send_youtube_upload")

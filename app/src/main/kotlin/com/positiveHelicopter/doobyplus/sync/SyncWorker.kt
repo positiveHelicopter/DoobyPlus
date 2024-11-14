@@ -48,6 +48,11 @@ class SyncWorker @AssistedInject constructor(
                         Log.i("SyncWorker", "Subscribed to twitter_post")
                     }
                 }
+            subscribeToTopic("youtube_upload").addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.i("SyncWorker", "youtube_upload")
+                }
+            }
         }
     }
 

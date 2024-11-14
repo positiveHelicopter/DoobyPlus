@@ -80,6 +80,7 @@ internal fun SettingsScreen(
             settings = listOf(
                 SETTINGS_TWITCH_LIVE,
                 SETTINGS_NEW_TWEET,
+                SETTINGS_YOUTUBE_UPLOAD
             ),
             isButton = false
         ),
@@ -102,6 +103,7 @@ internal fun SettingsScreen(
         setShouldRedirectUrl = viewModel::setShouldRedirectUrl,
         setShouldSendTwitchLive = viewModel::setShouldSendTwitchLive,
         setShouldSendNewTweet = viewModel::setShouldSendNewTweet,
+        setShouldSendYoutubeUpload = viewModel::setShouldSendYoutubeUpload,
         launchCustomTab = launchCustomTab,
         setIsCredits = viewModel::setIsCredits,
         askNotificationPermission = askNotificationPermission
@@ -117,6 +119,7 @@ internal fun SettingsScreen(
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
+    setShouldSendYoutubeUpload: (Boolean) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     setIsCredits: (Boolean) -> Unit = {},
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
@@ -197,6 +200,7 @@ internal fun SettingsScreen(
                                 setShouldRedirectUrl = setShouldRedirectUrl,
                                 setShouldSendTwitchLive = setShouldSendTwitchLive,
                                 setShouldSendNewTweet = setShouldSendNewTweet,
+                                setShouldSendYoutubeUpload = setShouldSendYoutubeUpload,
                                 launchCustomTab = launchCustomTab,
                                 setIsCredits = setIsCredits,
                                 askNotificationPermission = askNotificationPermission
@@ -228,6 +232,7 @@ internal fun SettingsCluster(
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
+    setShouldSendYoutubeUpload: (Boolean) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     setIsCredits: (Boolean) -> Unit = {},
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
@@ -283,6 +288,7 @@ internal fun SettingsCluster(
                 setShouldRedirectUrl = setShouldRedirectUrl,
                 setShouldSendTwitchLive = setShouldSendTwitchLive,
                 setShouldSendNewTweet = setShouldSendNewTweet,
+                setShouldSendYoutubeUpload = setShouldSendYoutubeUpload,
                 askNotificationPermission = askNotificationPermission
             )
         }
@@ -297,6 +303,7 @@ internal fun SettingsRow(
     setShouldRedirectUrl: (Boolean) -> Unit = {},
     setShouldSendTwitchLive: (Boolean) -> Unit = {},
     setShouldSendNewTweet: (Boolean) -> Unit = {},
+    setShouldSendYoutubeUpload: (Boolean) -> Unit = {},
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
 ) {
     var checked by remember { mutableStateOf(true) }
@@ -324,6 +331,15 @@ internal fun SettingsRow(
                             requestPermission()
                         }
                         setShouldSendNewTweet(it)
+                    }
+                }
+                SETTINGS_YOUTUBE_UPLOAD -> {
+                    checked = settingsState.data.shouldSendYoutubeUpload
+                    onCheckedChange = {
+                        if (it) askNotificationPermission { requestPermission ->
+                            requestPermission()
+                        }
+                        setShouldSendYoutubeUpload(it)
                     }
                 }
             }
@@ -425,7 +441,8 @@ internal fun SettingsScreenPreview() {
                 shouldRedirectUrl = true,
                 shouldSendTwitchLive = true,
                 shouldSendNewTweet = false,
-                isCredits = true
+                shouldSendYoutubeUpload = true,
+                isCredits = false
             )
         ),
         settingsList = listOf(
@@ -438,7 +455,8 @@ internal fun SettingsScreenPreview() {
                 title = "Notifications",
                 settings = listOf(
                     SETTINGS_TWITCH_LIVE,
-                    SETTINGS_NEW_TWEET
+                    SETTINGS_NEW_TWEET,
+                    SETTINGS_YOUTUBE_UPLOAD
                 ),
                 isButton = false
             ),
@@ -459,6 +477,7 @@ internal fun SettingsScreenPreview() {
 internal const val SETTINGS_REDIRECT_URL = "Redirect to External Apps"
 internal const val SETTINGS_TWITCH_LIVE = "Twitch Goes Live"
 internal const val SETTINGS_NEW_TWEET = "New Tweet"
+internal const val SETTINGS_YOUTUBE_UPLOAD = "Youtube Upload"
 internal const val SETTINGS_ABOUT_DOOBY = "About Dooby3D"
 internal const val SETTINGS_CREDITS = "Credits"
 internal const val SETTINGS_TITLE = "Settings"

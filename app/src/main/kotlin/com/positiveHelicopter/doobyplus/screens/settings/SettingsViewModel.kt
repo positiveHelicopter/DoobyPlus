@@ -52,6 +52,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setShouldSendYoutubeUpload(shouldSendYoutubeUpload: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setShouldSendYoutubeUpload(shouldSendYoutubeUpload)
+        }
+    }
+
     fun setIsCredits(isCredits: Boolean) {
         savedStateHandle[isCreditsKey] = isCredits
     }

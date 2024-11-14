@@ -361,6 +361,11 @@ internal fun SettingsCredits(
             handle = stringResource(R.string.credit_splash_screen_twitter),
             description = stringResource(R.string.credit_splash_screen_description)
         ),
+        CreditsGroup(
+            name = stringResource(R.string.credit_welcome),
+            handle = stringResource(R.string.credit_welcome_twitter),
+            description = stringResource(R.string.credit_welcome_description)
+        ),
     )
     LazyColumn(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
         items(credits.size) { index ->

@@ -22,15 +22,27 @@ import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsClient
+import com.positiveHelicopter.doobyplus.datastore.PreferenceDataSource
 import com.positiveHelicopter.doobyplus.network.FireStoreUpdateManager
+import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
+import com.positiveHelicopter.doobyplus.utility.di.DispatcherType.IO
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 @SuppressLint("SourceLockedOrientationActivity")
 class DoobActivity: ComponentActivity() {
+    @Inject @Dispatcher(IO) lateinit var ioDispatcher: CoroutineDispatcher
+    @Inject lateinit var preferenceDataSource: PreferenceDataSource
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
-    ) { _: Boolean -> }
+    ) { _: Boolean ->
+        CoroutineScope(ioDispatcher).launch {
+            preferenceDataSource.updateIsFirstTimeNotification(false)
+        }
+    }
     @Inject lateinit var fireStoreUpdateManager: FireStoreUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {

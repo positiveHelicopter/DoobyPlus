@@ -10,7 +10,9 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavBackStackEntry
@@ -208,9 +211,10 @@ internal fun DoobBottomBar(
         ),
     )
     val route = navBackStackEntry?.destination?.route
+    val botInset = WindowInsets.Companion.systemBars.getBottom(LocalDensity.current)
     AnimatedVisibility(!isHidden,
         enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically(),
+        exit = fadeOut() + shrinkVertically(targetHeight = { botInset }),
     ) {
         NavigationBar(
             modifier = modifier,

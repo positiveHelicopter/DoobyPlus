@@ -1,6 +1,6 @@
 package com.positiveHelicopter.doobyplus.model
 
-data class TwitchVideo(
+data class SocialsVideo(
     val title: String,
     val date: String,
     val url: String,

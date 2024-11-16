@@ -18,4 +18,9 @@ internal object DaosModule {
     fun providesTwitchDao(
         doobDatabase: DoobDatabase
     ) = doobDatabase.twitchDao()
+
+    @Provides
+    fun providesYouTubeDao(
+        doobDatabase: DoobDatabase
+    ) = doobDatabase.youtubeDao()
 }

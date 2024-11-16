@@ -2,13 +2,15 @@ package com.positiveHelicopter.doobyplus.repo.socials
 
 import com.positiveHelicopter.doobyplus.database.dao.TweetDao
 import com.positiveHelicopter.doobyplus.database.dao.TwitchDao
+import com.positiveHelicopter.doobyplus.database.dao.YouTubeDao
 import com.positiveHelicopter.doobyplus.datastore.PreferenceDataSource
 import com.positiveHelicopter.doobyplus.model.PostMessage
 import com.positiveHelicopter.doobyplus.model.PreviewImage
 import com.positiveHelicopter.doobyplus.model.SocialsData
-import com.positiveHelicopter.doobyplus.model.TwitchVideo
+import com.positiveHelicopter.doobyplus.model.SocialsVideo
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
 import com.positiveHelicopter.doobyplus.model.database.TwitchEntity
+import com.positiveHelicopter.doobyplus.model.database.YouTubeEntity
 import com.positiveHelicopter.doobyplus.model.database.asExternalModel
 import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
 import javax.inject.Inject
@@ -24,15 +26,23 @@ class DoobSocialsRepository @Inject constructor(
     @Dispatcher(IO) private val dispatcher: CoroutineDispatcher,
     private val userPreferenceDataSource: PreferenceDataSource,
     private val tweetDao: TweetDao,
-    private val twitchDao: TwitchDao
+    private val twitchDao: TwitchDao,
+    private val youtubeDao: YouTubeDao
 ): SocialsRepository {
     override val data: Flow<SocialsData> = combine(
         userPreferenceDataSource.userData,
         getTweets(),
         getTwitchVODs(),
         getTwitchTopClips(),
-    ) { userData, tweets,
-        twitchVODs, twitchTopClips ->
+        combine(
+            getYouTubeVideos(),
+            getYouTubeShorts(),
+            getYouTubeLiveStreams()
+        ) {
+            youtubeVideos, youtubeShorts, youtubeLive ->
+            youtubeVideos to youtubeShorts to youtubeLive
+        },
+    ) { userData, tweets, twitchVODs, twitchTopClips, youtubeVideos ->
         SocialsData(
             userPreference = userData,
             previewImage = PreviewImage(
@@ -41,7 +51,10 @@ class DoobSocialsRepository @Inject constructor(
             ),
             tweets = tweets.sortedByDescending { it.timestamp },
             twitchVODs = twitchVODs,
-            twitchTopClips = twitchTopClips
+            twitchTopClips = twitchTopClips,
+            youtubeVideos = youtubeVideos.first.first.sortedByDescending { it.date },
+            youtubeShorts = youtubeVideos.first.second.sortedByDescending { it.date },
+            youtubeLiveStreams = youtubeVideos.second.sortedByDescending { it.date }
         )
     }
 
@@ -99,10 +112,10 @@ class DoobSocialsRepository @Inject constructor(
         }
     }
 
-    override fun getTwitchVODs(): Flow<List<TwitchVideo>> =
+    override fun getTwitchVODs(): Flow<List<SocialsVideo>> =
         twitchDao.getTwitchVODs().map { it.map(TwitchEntity::asExternalModel) }
 
-    override fun getTwitchTopClips(): Flow<List<TwitchVideo>> =
+    override fun getTwitchTopClips(): Flow<List<SocialsVideo>> =
         twitchDao.getTwitchTopClips().map { it.map(TwitchEntity::asExternalModel) }
 
     override suspend fun insertTwitchVideos(videos: List<TwitchEntity>) {
@@ -112,5 +125,23 @@ class DoobSocialsRepository @Inject constructor(
     override suspend fun deleteOldTwitchVideos(videos: List<TwitchEntity>) {
         twitchDao.deleteOldVideos(videos.map { it.id })
         twitchDao.deleteOldWeeklyVideos(videos.filter { it.type == "weekly" }.map { it.id })
+    }
+
+    override fun getYouTubeVideos(): Flow<List<SocialsVideo>> =
+        youtubeDao.getYouTubeVideos().map { it.map(YouTubeEntity::asExternalModel) }
+
+
+    override fun getYouTubeShorts(): Flow<List<SocialsVideo>> =
+        youtubeDao.getYouTubeShorts().map { it.map(YouTubeEntity::asExternalModel) }
+
+    override fun getYouTubeLiveStreams(): Flow<List<SocialsVideo>> =
+        youtubeDao.getYouTubeLiveStreams().map { it.map(YouTubeEntity::asExternalModel) }
+
+    override suspend fun insertYouTubeVideos(videos: List<YouTubeEntity>) {
+        youtubeDao.insertVideos(videos)
+    }
+
+    override suspend fun deleteOldYouTubeVideos(videos: List<YouTubeEntity>) {
+        youtubeDao.deleteOldVideos(videos.map { it.id })
     }
 }

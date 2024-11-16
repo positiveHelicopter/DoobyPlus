@@ -4,8 +4,11 @@ data class SocialsData(
     val userPreference: UserPreference,
     val previewImage: PreviewImage,
     val tweets: List<PostMessage>,
-    val twitchVODs: List<TwitchVideo>,
-    val twitchTopClips: List<TwitchVideo>
+    val twitchVODs: List<SocialsVideo>,
+    val twitchTopClips: List<SocialsVideo>,
+    val youtubeVideos: List<SocialsVideo>,
+    val youtubeShorts: List<SocialsVideo>,
+    val youtubeLiveStreams: List<SocialsVideo>
 )
 
 data class PreviewImage(

@@ -18,6 +18,7 @@ fun String.convertIsoToDDMMMYYYYHHmm(): String {
 }
 
 fun String.convertDurationToHHmm(): String {
+    if (this.isEmpty()) return this
     try {
         var result = ""
         val splits = this.split("h", "m", "s", ".").filter {

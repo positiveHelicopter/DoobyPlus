@@ -67,7 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.positiveHelicopter.doobyplus.utility.DoobyPreview
 import com.positiveHelicopter.doobyplus.R
 import com.positiveHelicopter.doobyplus.model.SocialsTab
-import com.positiveHelicopter.doobyplus.model.TwitchVideo
+import com.positiveHelicopter.doobyplus.model.SocialsVideo
 import com.positiveHelicopter.doobyplus.screens.welcome.WelcomeScreen
 import com.positiveHelicopter.doobyplus.ui.ImagePreview
 import com.positiveHelicopter.doobyplus.ui.NoRippleInteractionSource
@@ -405,7 +405,7 @@ internal fun SocialsViewPager(
         is SocialsState.Success -> socialsState.data.userPreference.shouldRedirectUrl
         else -> true
     }
-    val dataList: List<List<TwitchVideo>> = when(title) {
+    val dataList: List<List<SocialsVideo>> = when(title) {
         "Twitch" -> {
             val videos = when(socialsState) {
                 is SocialsState.Success -> socialsState.data.twitchVODs
@@ -417,7 +417,21 @@ internal fun SocialsViewPager(
             }
             listOf(videos, topClips)
         }
-        "Youtube" -> listOf(listOf(), listOf(), listOf())
+        "Youtube" -> {
+            val videos = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.youtubeVideos
+                else -> listOf()
+            }
+            val shorts = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.youtubeShorts
+                else -> listOf()
+            }
+            val live = when(socialsState) {
+                is SocialsState.Success -> socialsState.data.youtubeLiveStreams
+                else -> listOf()
+            }
+            listOf(videos, shorts, live)
+        }
         else -> null
     } ?: return
     HorizontalPager(

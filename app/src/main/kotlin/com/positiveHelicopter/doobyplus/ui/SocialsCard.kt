@@ -58,6 +58,7 @@ internal fun SocialsCard(
                     placeholder = painterResource(R.drawable.jerboa_erm),
                     error = painterResource(R.drawable.jerboa_erm)
                 )
+                if (duration.isNotEmpty())
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

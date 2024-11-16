@@ -7,6 +7,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
 import com.positiveHelicopter.doobyplus.model.database.TweetEntity
 import com.positiveHelicopter.doobyplus.model.database.TwitchEntity
+import com.positiveHelicopter.doobyplus.model.database.YouTubeEntity
 import com.positiveHelicopter.doobyplus.repo.socials.SocialsRepository
 import com.positiveHelicopter.doobyplus.utility.di.Dispatcher
 import com.positiveHelicopter.doobyplus.utility.di.DispatcherType.IO
@@ -23,6 +24,7 @@ class FireStoreUpdateManager @Inject constructor(
     fun listenForUpdates() {
         listenForTweets()
         listenForTwitch()
+        listenForYoutube()
     }
 
     fun unregisterListeners() {
@@ -71,6 +73,25 @@ class FireStoreUpdateManager @Inject constructor(
             }
             socialsRepository.deleteOldTwitchVideos(videos)
             socialsRepository.insertTwitchVideos(videos)
+        }
+    }
+
+    private fun listenForYoutube() {
+        listenForUpdate("youtube") { snapshot ->
+            val entries = snapshot.data?.map { video ->
+                val obj = video.value as Map<*, *>
+                val url = "https://www.youtube.com/watch?v=${video.key}"
+                YouTubeEntity(
+                    id = video.key,
+                    title = obj["title"].toString(),
+                    date = obj["date"].toString().trim(),
+                    url = url,
+                    thumbnailUrl = obj["thumbnail"].toString().trim(),
+                    type = obj["type"].toString().trim()
+                )
+            } ?: emptyList()
+            socialsRepository.deleteOldYouTubeVideos(entries)
+            socialsRepository.insertYouTubeVideos(entries)
         }
     }
 

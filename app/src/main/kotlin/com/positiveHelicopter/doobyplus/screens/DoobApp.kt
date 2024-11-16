@@ -6,6 +6,8 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
@@ -74,29 +76,42 @@ internal fun DoobApp(
     Scaffold(modifier = modifier,
         bottomBar = { DoobBottomBar(
             navBackStackEntry = navBackStackEntry,
-            navigateToWatch = navController::navigateToWatch,
-            navigateToSocials = navController::navigateToSocials,
-            navigateToSettings = navController::navigateToSettings,
+            navigateToWatch = {
+                hideFab = false
+                navController.navigateToWatch()
+            },
+            navigateToSocials = {
+                hideFab = false
+                navController.navigateToSocials()
+            },
+            navigateToSettings = {
+                hideFab = true
+                navController.navigateToSettings()
+            },
             isHidden = hideBottomBar
         ) },
         floatingActionButton = {
-            if (!hideFab)
-            FloatingActionButton(
-                onClick = {
-                    updateBottomNavigationExpandedState(hideBottomBar)
-                },
-                containerColor = colorResource(R.color.color_welcome_green),
-                contentColor = colorResource(R.color.color_black_faded)
+            AnimatedVisibility(!hideFab,
+                enter = scaleIn(),
+                exit = scaleOut()
             ) {
-                val image = if (hideBottomBar) {
-                    Icons.Filled.KeyboardArrowUp
-                } else {
-                    Icons.Filled.KeyboardArrowDown
+                FloatingActionButton(
+                    onClick = {
+                        updateBottomNavigationExpandedState(hideBottomBar)
+                    },
+                    containerColor = colorResource(R.color.color_welcome_green),
+                    contentColor = colorResource(R.color.color_black_faded)
+                ) {
+                    val image = if (hideBottomBar) {
+                        Icons.Filled.KeyboardArrowUp
+                    } else {
+                        Icons.Filled.KeyboardArrowDown
+                    }
+                    Icon(
+                        image,
+                        contentDescription = "Expand Bottom Bar",
+                    )
                 }
-                Icon(
-                    image,
-                    contentDescription = "Expand Bottom Bar",
-                )
             }
         },
         containerColor = colorResource(id = R.color.backgroundColor)) { innerPadding ->

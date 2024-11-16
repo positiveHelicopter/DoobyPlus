@@ -24,16 +24,18 @@ internal fun NavGraphBuilder.watchScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     setOrientation: (Int) -> Unit = {},
     toggleBottomBarHidden: (Boolean) -> Unit = {},
+    toggleFabHidden: (Boolean) -> Unit = {},
     hideSystemBars: () -> Unit = {},
-    openTwitch: () -> Unit = {}
+    openExternalApp: (String) -> Unit = {}
 ) {
     composable(WATCH_ROUTE) {
         WatchScreen(
             innerPadding = innerPadding,
             setOrientation = setOrientation,
             toggleBottomBarHidden = toggleBottomBarHidden,
+            toggleFabHidden = toggleFabHidden,
             hideSystemBars = hideSystemBars,
-            openTwitch = openTwitch
+            openExternalApp = openExternalApp
         )
     }
 }

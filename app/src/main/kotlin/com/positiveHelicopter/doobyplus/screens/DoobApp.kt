@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -63,7 +63,7 @@ internal fun DoobApp(
     modifier: Modifier = Modifier,
     setOrientation: (Int) -> Unit = {},
     hideSystemBars: () -> Unit = {},
-    openTwitch: ((String, String) -> Unit) -> Unit = {},
+    openExternalApp: (String, (String, String) -> Unit) -> Unit = { _, _ -> },
     launchCustomTab: (String, Boolean, (String, String) -> Unit) -> Unit = { _ ,_, _ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
     updateBottomNavigationExpandedState: (Boolean) -> Unit = {}
@@ -142,9 +142,10 @@ internal fun DoobApp(
                 innerPadding = innerPadding,
                 setOrientation = setOrientation,
                 toggleBottomBarHidden = { hideBottomBar = it },
+                toggleFabHidden = { hideFab = it },
                 hideSystemBars = hideSystemBars,
-                openTwitch = {
-                    openTwitch { title, text ->
+                openExternalApp = {
+                    openExternalApp(it) { title, text ->
                         errorTitle = title
                         errorText = text
                         showErrorDialog = true
@@ -192,8 +193,8 @@ internal fun DoobBottomBar(
 ) {
     val items = listOf(
         DoobNavigationBarItem(
-            unselectedIcon = Icons.Outlined.Home,
-            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.PlayArrow,
+            selectedIcon = Icons.Filled.PlayArrow,
             contentDescription = WATCH_ROUTE,
             route = WATCH_ROUTE
         ),

@@ -53,7 +53,7 @@ class DoobActivity: ComponentActivity() {
             DoobApp(
                 setOrientation = ::setOrientation,
                 hideSystemBars = ::hideSystemBars,
-                openTwitch = ::openTwitch,
+                openExternalApp = ::openExternalApp,
                 launchCustomTab = ::launchCustomTab,
                 askNotificationPermission = ::askNotificationPermission,
                 updateBottomNavigationExpandedState = ::updateBottomNavigationExpandedState
@@ -77,11 +77,12 @@ class DoobActivity: ComponentActivity() {
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
-    private fun openTwitch(
+    private fun openExternalApp(
+        url: String,
         onError: (String, String) -> Unit
     ) {
         try {
-            val uri = Uri.parse("twitch://stream/dooby3d")
+            val uri = Uri.parse(url)
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {

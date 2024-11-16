@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,6 +61,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -181,6 +184,7 @@ internal fun SocialsMainScreen(
     toggleFabHidden: (Boolean) -> Unit = {},
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
+    var bottomPadding by remember { mutableStateOf(0.dp) }
     when(socialsState) {
         is SocialsState.Loading -> {}
         is SocialsState.Success -> {
@@ -194,8 +198,10 @@ internal fun SocialsMainScreen(
                 )
             } else {
                 toggleFabHidden(false)
-                if (socialsState.data.userPreference.bottomNavigationExpandedState)
+                if (socialsState.data.userPreference.bottomNavigationExpandedState) {
                     setBottomNavigationExpandedState(true)
+                    bottomPadding = innerPadding.calculateBottomPadding()
+                } else bottomPadding = 0.dp
             }
         }
     }
@@ -234,7 +240,12 @@ internal fun SocialsMainScreen(
     val coroutineScope = rememberCoroutineScope()
     Column(modifier = modifier
         .fillMaxSize()
-        .padding(innerPadding)
+        .padding(PaddingValues(
+            top = innerPadding.calculateTopPadding(),
+            bottom = bottomPadding,
+            start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+            end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
+        ))
         .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         DoobLogo(logoFontFamily = logoFontFamily)
@@ -498,7 +509,7 @@ internal fun SocialsViewPager(
                     }
                 ),
                 columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(top = topPadding)
+                contentPadding = PaddingValues(top = topPadding, bottom = 100.dp)
             ) {
                 items(itemList) {
                     SocialsCard(
@@ -533,7 +544,7 @@ internal fun LazyPostsList(
         else -> true
     }
     LazyColumn(modifier = modifier.background(colorResource(R.color.color_almost_black_faded)),
-        contentPadding = PaddingValues(top = 20.dp)) {
+        contentPadding = PaddingValues(top = 20.dp, bottom = 100.dp)) {
         items(posts.size) { index ->
             SocialsPost(
                 id = posts[index].id,

@@ -54,6 +54,12 @@ class SocialsViewModel @Inject constructor(
         }
     }
 
+    fun setBottomNavigationExpandedState(isExpanded: Boolean) {
+        viewModelScope.launch {
+            socialsRepository.setBottomNavigationExpandedState(isExpanded)
+        }
+    }
+
     fun updateTweetPreview(id: String, text: String, url: String) {
         viewModelScope.launch {
             socialsRepository.updateTweetPreview(id, text, url)

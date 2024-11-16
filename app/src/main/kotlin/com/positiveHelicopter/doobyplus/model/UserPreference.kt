@@ -5,5 +5,6 @@ data class UserPreference(
     val shouldRedirectUrl: Boolean,
     val shouldSendTwitchLive: Boolean,
     val shouldSendNewTweet: Boolean,
-    val shouldSendYoutubeUpload: Boolean
+    val shouldSendYoutubeUpload: Boolean,
+    val bottomNavigationExpandedState: Boolean
 )

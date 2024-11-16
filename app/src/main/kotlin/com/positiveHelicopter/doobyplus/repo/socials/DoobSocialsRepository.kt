@@ -64,6 +64,12 @@ class DoobSocialsRepository @Inject constructor(
         userPreferenceDataSource.updateIsFirstTimeNotification(isFirstTime)
     }
 
+    override suspend fun setBottomNavigationExpandedState(
+        isExpanded: Boolean
+    ) = withContext(dispatcher) {
+        userPreferenceDataSource.updateBottomNavigationExpandedState(isExpanded)
+    }
+
     override fun getTweets(): Flow<List<PostMessage>> =
         tweetDao.getTweets().map { it.map(TweetEntity::asExternalModel) }
 

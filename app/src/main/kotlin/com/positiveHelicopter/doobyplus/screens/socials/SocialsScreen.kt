@@ -86,7 +86,8 @@ internal fun SocialsScreen(
     setOrientation: (Int) -> Unit = {},
     launchCustomTab: (String, Boolean) -> Unit = { _, _ -> },
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
-    toggleBottomBarHidden: (Boolean) -> Unit = {}
+    toggleBottomBarHidden: (Boolean) -> Unit = {},
+    toggleFabHidden: (Boolean) -> Unit = {}
 ) {
     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -104,7 +105,9 @@ internal fun SocialsScreen(
         askNotificationPermission = askNotificationPermission,
         setIsFirstTimeNotification = viewModel::setIsFirstTimeNotification,
         updatePreviewLink = viewModel::updateTweetPreview,
+        setBottomNavigationExpandedState = viewModel::setBottomNavigationExpandedState,
         toggleBottomBarHidden = toggleBottomBarHidden,
+        toggleFabHidden = toggleFabHidden,
         setPreviewImage = viewModel::setPreviewImage
     )
 }
@@ -121,7 +124,9 @@ internal fun SocialsScreen(
     askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
     setIsFirstTimeNotification: (Boolean) -> Unit = {},
     updatePreviewLink: (String, String, String) -> Unit = { _, _, _ -> },
+    setBottomNavigationExpandedState: (Boolean) -> Unit = {},
     toggleBottomBarHidden: (Boolean) -> Unit = {},
+    toggleFabHidden: (Boolean) -> Unit = {},
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     when(socialsState) {
@@ -138,6 +143,10 @@ internal fun SocialsScreen(
                 return
             }
 
+            if (socialsState.data.userPreference.bottomNavigationExpandedState) {
+                toggleBottomBarHidden(false)
+            } else toggleBottomBarHidden(true)
+
             //show socials
             SocialsMainScreen(
                 socialsState = socialsState,
@@ -148,7 +157,9 @@ internal fun SocialsScreen(
                 selectedTabIndex = selectedTabIndex,
                 updateSelectedPrimaryTabIndex = updateSelectedPrimaryTabIndex,
                 updatePreviewLink = updatePreviewLink,
+                setBottomNavigationExpandedState = setBottomNavigationExpandedState,
                 toggleBottomBarHidden = toggleBottomBarHidden,
+                toggleFabHidden = toggleFabHidden,
                 setPreviewImage = setPreviewImage
             )
         }
@@ -165,7 +176,9 @@ internal fun SocialsMainScreen(
     selectedTabIndex: Int,
     updateSelectedPrimaryTabIndex: (Int) -> Unit,
     updatePreviewLink: (String, String, String) -> Unit = { _, _, _ -> },
+    setBottomNavigationExpandedState: (Boolean) -> Unit = {},
     toggleBottomBarHidden: (Boolean) -> Unit = {},
+    toggleFabHidden: (Boolean) -> Unit = {},
     setPreviewImage: (Boolean, String) -> Unit = { _, _ -> }
 ) {
     when(socialsState) {
@@ -173,13 +186,16 @@ internal fun SocialsMainScreen(
         is SocialsState.Success -> {
             if (socialsState.data.previewImage.shouldPreviewImage) {
                 toggleBottomBarHidden(true)
+                toggleFabHidden(true)
                 ImagePreview(
                     innerPadding = innerPadding,
                     url = socialsState.data.previewImage.url,
                     setPreviewImage = setPreviewImage
                 )
             } else {
-                toggleBottomBarHidden(false)
+                toggleFabHidden(false)
+                if (socialsState.data.userPreference.bottomNavigationExpandedState)
+                    setBottomNavigationExpandedState(true)
             }
         }
     }

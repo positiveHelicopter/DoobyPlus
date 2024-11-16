@@ -1,16 +1,24 @@
 package com.positiveHelicopter.doobyplus.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -52,12 +60,14 @@ internal fun DoobApp(
     hideSystemBars: () -> Unit = {},
     openTwitch: ((String, String) -> Unit) -> Unit = {},
     launchCustomTab: (String, Boolean, (String, String) -> Unit) -> Unit = { _ ,_, _ -> },
-    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {}
+    askNotificationPermission: ((() -> Unit) -> Unit) -> Unit = {},
+    updateBottomNavigationExpandedState: (Boolean) -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val background = painterResource(R.drawable.doob_background)
     var hideBottomBar by rememberSaveable { mutableStateOf(false) }
+    var hideFab by rememberSaveable { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorTitle by remember { mutableStateOf("") }
     var errorText by remember { mutableStateOf("") }
@@ -69,6 +79,26 @@ internal fun DoobApp(
             navigateToSettings = navController::navigateToSettings,
             isHidden = hideBottomBar
         ) },
+        floatingActionButton = {
+            if (!hideFab)
+            FloatingActionButton(
+                onClick = {
+                    updateBottomNavigationExpandedState(hideBottomBar)
+                },
+                containerColor = colorResource(R.color.color_welcome_green),
+                contentColor = colorResource(R.color.color_black_faded)
+            ) {
+                val image = if (hideBottomBar) {
+                    Icons.Filled.KeyboardArrowUp
+                } else {
+                    Icons.Filled.KeyboardArrowDown
+                }
+                Icon(
+                    image,
+                    contentDescription = "Expand Bottom Bar",
+                )
+            }
+        },
         containerColor = colorResource(id = R.color.backgroundColor)) { innerPadding ->
         if (showErrorDialog) {
             ErrorDialog(title = errorTitle, text = errorText) {
@@ -114,7 +144,8 @@ internal fun DoobApp(
                     }
                 },
                 askNotificationPermission = askNotificationPermission,
-                toggleBottomBarHidden = { hideBottomBar = it }
+                toggleBottomBarHidden = { hideBottomBar = it },
+                toggleFabHidden = { hideFab = it }
             )
             settingsScreen(
                 innerPadding = innerPadding,
@@ -141,7 +172,6 @@ internal fun DoobBottomBar(
     navigateToSettings: () -> Unit = {},
     isHidden: Boolean = false
 ) {
-    if (isHidden) return
     val items = listOf(
         DoobNavigationBarItem(
             unselectedIcon = Icons.Outlined.Home,
@@ -163,31 +193,36 @@ internal fun DoobBottomBar(
         ),
     )
     val route = navBackStackEntry?.destination?.route
-    NavigationBar(
-        modifier = modifier,
-        containerColor = colorResource(R.color.colorPrimary)
+    AnimatedVisibility(!isHidden,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically(),
     ) {
-        items.forEach {
-            val selected = route == it.route
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    if (!selected)
-                    when(it.route) {
-                        WATCH_ROUTE -> navigateToWatch()
-                        SOCIALS_ROUTE -> navigateToSocials()
-                        SETTINGS_ROUTE -> navigateToSettings()
-                        else -> navigateToWatch()
+        NavigationBar(
+            modifier = modifier,
+            containerColor = colorResource(R.color.colorPrimary)
+        ) {
+            items.forEach {
+                val selected = route == it.route
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = {
+                        if (!selected)
+                            when(it.route) {
+                                WATCH_ROUTE -> navigateToWatch()
+                                SOCIALS_ROUTE -> navigateToSocials()
+                                SETTINGS_ROUTE -> navigateToSettings()
+                                else -> navigateToWatch()
+                            }
+                    },
+                    colors = doobNavigationBarItemColors(),
+                    icon = {
+                        Icon(
+                            if(selected) it.selectedIcon else it.unselectedIcon,
+                            contentDescription = "Settings"
+                        )
                     }
-                },
-                colors = doobNavigationBarItemColors(),
-                icon = {
-                    Icon(
-                        if(selected) it.selectedIcon else it.unselectedIcon,
-                        contentDescription = "Settings"
-                    )
-                }
-            )
+                )
+            }
         }
     }
 }

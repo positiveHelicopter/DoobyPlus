@@ -55,7 +55,8 @@ class DoobActivity: ComponentActivity() {
                 hideSystemBars = ::hideSystemBars,
                 openTwitch = ::openTwitch,
                 launchCustomTab = ::launchCustomTab,
-                askNotificationPermission = ::askNotificationPermission
+                askNotificationPermission = ::askNotificationPermission,
+                updateBottomNavigationExpandedState = ::updateBottomNavigationExpandedState
             )
         }
         fireStoreUpdateManager.listenForUpdates()
@@ -126,5 +127,11 @@ class DoobActivity: ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         displayDialog(requestPermission)
+    }
+
+    private fun updateBottomNavigationExpandedState(isExpanded: Boolean) {
+        CoroutineScope(ioDispatcher).launch {
+            preferenceDataSource.updateBottomNavigationExpandedState(isExpanded)
+        }
     }
 }

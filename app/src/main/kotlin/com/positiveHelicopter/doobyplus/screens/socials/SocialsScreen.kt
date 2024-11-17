@@ -138,6 +138,7 @@ internal fun SocialsScreen(
             if(socialsState.data.userPreference.isFirstTimeNotification) {
                 //show welcome
                 toggleBottomBarHidden(true)
+                toggleFabHidden(true)
                 WelcomeScreen(
                     modifier = modifier,
                     askNotificationPermission = askNotificationPermission,

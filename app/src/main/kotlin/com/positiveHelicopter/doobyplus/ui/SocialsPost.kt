@@ -92,44 +92,45 @@ internal fun SocialsPost(
                     .fillMaxSize()
                     .wrapContentHeight(),
             ) {
-                Text(
-                    text = buildAnnotatedString {
-                        val httpsParts = text.findHttpsUrl()
-                        if (httpsParts.isEmpty()) {
-                            append(text)
-                            return@buildAnnotatedString
-                        }
-                        append(text.substring(0, httpsParts[0].startIndex))
-                        httpsParts.forEachIndexed { index, part ->
-                            withLink(
-                                LinkAnnotation.Url(
-                                    url = part.url,
-                                    styles = TextLinkStyles(
-                                        style = SpanStyle(
-                                            color = colorResource(R.color.color_light_blue)
-                                        )
-                                    )
-                                ) {
-                                    launchCustomTab(part.url)
-                                }
-                            ) {
-                                append(part.url)
+                if (text.isNotEmpty())
+                    Text(
+                        text = buildAnnotatedString {
+                            val httpsParts = text.findHttpsUrl()
+                            if (httpsParts.isEmpty()) {
+                                append(text)
+                                return@buildAnnotatedString
                             }
-                            append(text.substring(
-                                part.endIndex,
-                                if (index + 1 < httpsParts.size)
-                                    httpsParts[index + 1].startIndex
-                                else text.length))
-                        }
-                    },
-                    modifier = Modifier.padding(
-                        start = 30.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
-                    color = colorResource(R.color.color_white_faded),
-                    fontSize = 16.sp
-                )
+                            append(text.substring(0, httpsParts[0].startIndex))
+                            httpsParts.forEachIndexed { index, part ->
+                                withLink(
+                                    LinkAnnotation.Url(
+                                        url = part.url,
+                                        styles = TextLinkStyles(
+                                            style = SpanStyle(
+                                                color = colorResource(R.color.color_light_blue)
+                                            )
+                                        )
+                                    ) {
+                                        launchCustomTab(part.url)
+                                    }
+                                ) {
+                                    append(part.url)
+                                }
+                                append(text.substring(
+                                    part.endIndex,
+                                    if (index + 1 < httpsParts.size)
+                                        httpsParts[index + 1].startIndex
+                                    else text.length))
+                            }
+                        },
+                        modifier = Modifier.padding(
+                            start = 30.dp, end = 15.dp, top = 10.dp),
+                        color = colorResource(R.color.color_white_faded),
+                        fontSize = 16.sp
+                    )
                 Text(
                     modifier = Modifier.fillMaxWidth()
-                        .padding(bottom = 10.dp, start = 10.dp, end = 15.dp),
+                        .padding(bottom = 10.dp, start = 10.dp, end = 15.dp, top = 10.dp),
                     text = date.convertTweetDateToDDMMMYYYYHHmm(),
                     color = colorResource(R.color.color_grey_faded),
                     fontSize = 14.sp,
